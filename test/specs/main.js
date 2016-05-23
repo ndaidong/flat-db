@@ -83,7 +83,7 @@ test('Testing Collection basic methods:', (assert) => {
 test('Testing Collection data manapulation:', (assert) => {
 
   FlatDB.configure({
-    path: 'storage',
+    path: 'storage/',
     maxTextLength: 500
   });
 
@@ -106,7 +106,7 @@ test('Testing Collection data manapulation:', (assert) => {
   async.series([
     (next) => {
       assert.comment('Add article item');
-      C.setItem({
+      C.add({
         id: id,
         title: title
       }).then((key) => {
@@ -116,7 +116,7 @@ test('Testing Collection data manapulation:', (assert) => {
     },
     (next) => {
       assert.comment('Get article item');
-      C.getItem(_id).then((item) => {
+      C.get(_id).then((item) => {
         assert.comment('Check article item');
         assert.equals(item.id, id, `item.id must be "${id}"`);
         assert.equals(item.title, title, `item.title must be "${title}"`);
@@ -124,14 +124,14 @@ test('Testing Collection data manapulation:', (assert) => {
     },
     (next) => {
       assert.comment('Add movie item');
-      C.setItem(movie).then((key) => {
+      C.add(movie).then((key) => {
         assert.ok(key, `Must return a movie key: "${key}"`);
         _movieId = key;
       }).finally(next);
     },
     (next) => {
       assert.comment('Get movie item');
-      C.getItem(_movieId, 'title director writer imdb').then((item) => {
+      C.get(_movieId, 'title director writer imdb').then((item) => {
         assert.comment('Check movie item');
         assert.equals(item.title, movie.title, `item.title must be "${movie.title}"`);
         assert.equals(item.director, movie.director, `item.director must be "${movie.director}"`);
@@ -144,7 +144,7 @@ test('Testing Collection data manapulation:', (assert) => {
     },
     (next) => {
       assert.comment('Remove movie item');
-      C.removeItem(_movieId).then((item) => {
+      C.remove(_movieId).then((item) => {
         assert.comment('Check movie item');
         assert.ok(bella.isObject(item), 'Item has been removed');
       }).finally(next);
@@ -152,14 +152,14 @@ test('Testing Collection data manapulation:', (assert) => {
     (next) => {
       assert.comment('Empty collection');
       FlatDB.emptyCollection(col);
-      C.getItem(_id).then((a) => {
+      C.get(_id).then((a) => {
         assert.equals(a, null, 'Item must be not exist');
       }).finally(next);
     },
     (next) => {
       assert.comment('Remove collection');
       FlatDB.removeCollection(col);
-      C.getItem(_id).then((a) => {
+      C.get(_id).then((a) => {
         assert.equals(a, null, 'Item must be gone with removed collection');
       }).finally(next);
     },

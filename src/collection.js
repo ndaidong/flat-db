@@ -72,7 +72,10 @@ class Collection {
     this.schema = schema;
   }
 
-  setItem(item) {
+  add(item) {
+    if (!bella.isObject(item)) {
+      throw new Error('Invalid parameter. Object required.');
+    }
     return new Promise((resolve, reject) => {
       let file = this.file;
       return getColData(file).then((data) => {
@@ -90,7 +93,10 @@ class Collection {
     });
   }
 
-  getItem(id, fields) {
+  get(id, fields) {
+    if (!bella.isString(id)) {
+      throw new Error('Invalid parameter. String required.');
+    }
     return new Promise((resolve, reject) => {
       let file = this.file;
       return getColData(file).then((data) => {
@@ -110,7 +116,10 @@ class Collection {
     });
   }
 
-  removeItem(id) {
+  remove(id) {
+    if (!bella.isString(id)) {
+      throw new Error('Invalid parameter. String required.');
+    }
     return new Promise((resolve, reject) => {
       let file = this.file;
       return getColData(file).then((data) => {

@@ -9,6 +9,7 @@ var bella = require('bellajs');
 var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').execSync;
+var mkdirp = require('mkdirp').sync;
 
 var Collection = require('./collection');
 
@@ -57,7 +58,7 @@ var FlatDB = {
     }
     let t = _conf.storeDir;
     if (!fs.existsSync(t)) {
-      exec('mkdir ' + t);
+      mkdirp(t);
     }
     let mtl = opt.maxTextLength;
     if (bella.isNumber(mtl) && mtl > 0 && mtl < MAX_TEXT_LENG) {
@@ -78,7 +79,7 @@ var FlatDB = {
     let name = bella.strtolower(col);
     let d = getDir(name);
     if (!fs.existsSync(d)) {
-      fs.mkdirSync(d);
+      mkdirp(d);
     }
     if (!fs.existsSync(d)) {
       return false;
@@ -105,7 +106,7 @@ var FlatDB = {
     if (c) {
       let d = c.dir;
       exec('rm -rf ' + d);
-      return fs.mkdirSync(d);
+      return mkdirp(d);
     }
     return false;
   }
