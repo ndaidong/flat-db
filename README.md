@@ -9,10 +9,10 @@ Flat-file based data storage
 # Setup
 
 ```
-npm install flat-db
+npm install flat-db --save
 ```
 
-And then:
+# Usage
 
 ```
   var FlatDB = require('flat-db');
