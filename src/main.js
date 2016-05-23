@@ -81,9 +81,6 @@ var FlatDB = {
     if (!fs.existsSync(d)) {
       mkdirp(d);
     }
-    if (!fs.existsSync(d)) {
-      return false;
-    }
     let c = new Collection(name, d, schema);
     _collections[name] = c;
     return c;
@@ -109,6 +106,14 @@ var FlatDB = {
       return mkdirp(d);
     }
     return false;
+  },
+  reset: () => {
+    let d = _conf.storeDir;
+    if (fs.existsSync(d)) {
+      _collections = {};
+      exec('rm -rf ' + d);
+      mkdirp(d);
+    }
   }
 };
 

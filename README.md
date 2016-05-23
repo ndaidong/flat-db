@@ -60,6 +60,7 @@ npm install flat-db --save
  - .getCollection(String collectionName)
  - .emptyCollection(String collectionName)
  - .removeCollection(String collectionName)
+ - .reset(): remove all collections
 
 FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance with the following methods:
 
@@ -68,7 +69,6 @@ FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance w
  - .get(String itemKey)
  - .remove(String itemKey)
  - .find(Object condition) // not implemented
- - .clean() // not implemented
 
 
 # Test

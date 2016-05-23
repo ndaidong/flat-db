@@ -61,7 +61,7 @@ var clean = (data, fields = []) => {
 
 class Collection {
 
-  constructor(name, dir, schema) {
+  constructor(name, dir, schema = {}) {
     let file = dir + name + EXT;
     if (!fs.existsSync(file)) {
       fs.writeFileSync(file, '', 'utf8');

@@ -12,6 +12,7 @@ var path = require('path');
 var test = require('tape');
 var bella = require('bellajs');
 var async = require('async');
+var exec = require('child_process').execSync;
 
 var rootDir = '../../src/';
 var FlatDB = require(path.join(rootDir, 'main'));
@@ -35,11 +36,18 @@ test('Testing "configure" method:', (assert) => {
 
   let exp = 'storage/';
 
-  assert.comment('(Call config object is C, so:)');
+  assert.comment('(Call "config" is C, so:)');
   assert.ok(bella.isObject(config), 'C must be an object.');
   assert.ok(hasRequiredKeys(config), 'C must have all required keys.');
   assert.equals(config.storeDir, exp, `C.storeDir must be "${exp}"`);
   assert.equals(FlatDB.getConfigs().storeDir, exp, `FlatDB.getConfigs().storeDir must return "${exp}"`);
+
+  assert.comment('Configure with default options');
+  let cnf = FlatDB.configure();
+  assert.ok(bella.isObject(cnf), 'cnf must be an object.');
+  assert.ok(hasRequiredKeys(cnf), 'cnf must have all required keys.');
+  exec('rm -rf ' + cnf.storeDir);
+
   assert.end();
 });
 
@@ -48,6 +56,8 @@ test('Testing Collection basic methods:', (assert) => {
   FlatDB.configure({
     path: 'storage'
   });
+
+  assert.comment('Add collection');
 
   let addCollection = () => {
     FlatDB.addCollection('asdf sadf ');
@@ -61,7 +71,7 @@ test('Testing Collection basic methods:', (assert) => {
 
   let exp = 'users';
   FlatDB.addCollection(exp);
-  var userCol = FlatDB.getCollection(exp);
+  let userCol = FlatDB.getCollection(exp);
   assert.ok(userCol instanceof Collection, 'userCol must be instance of Collection class.');
   assert.equals(userCol.name, exp, `userCol.name must be "${exp}"`);
 
@@ -73,9 +83,29 @@ test('Testing Collection basic methods:', (assert) => {
   };
   assert.throws(dupCollection.bind(null, {}), 'Adding duplicate name should throw an exception');
 
+  assert.comment('Remove collection');
   FlatDB.removeCollection(exp);
-  var check = FlatDB.getCollection(exp);
-  assert.equals(check, false, 'Collection must be removed');
+  let check = FlatDB.getCollection(exp);
+  assert.ok(!check, 'Collection must be removed');
+
+  assert.comment('Reset database');
+
+  let arr = [
+    'animals', 'cars', 'people'
+  ];
+
+  arr.forEach((col) => {
+    FlatDB.addCollection(col);
+    var x = FlatDB.getCollection(col);
+    assert.ok(x, bella.ucfirst(col) + ' collection must be created.');
+  });
+
+  FlatDB.reset();
+  arr.forEach((col) => {
+    let x = FlatDB.getCollection(col);
+    console.log(x);
+    assert.ok(!x, bella.ucfirst(col) + ' collection must be removed.');
+  });
 
   assert.end();
 });
