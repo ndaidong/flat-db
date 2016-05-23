@@ -142,6 +142,13 @@ class Collection {
     });
   }
 
+  find(criteria) {
+    if (!bella.isObject(criteria)) {
+      throw new Error('Invalid parameter. Object required.');
+    }
+    return [];
+  }
+
 }
 
 module.exports = Collection;
