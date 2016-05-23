@@ -1,11 +1,6 @@
 language: node_js
 node_js:
+  - "6.2.0"
   - "6.0.0"
-  - "5.11.0"
-  - "5.9"
-  - "5.0"
-  - "4.2"
-before_script:
-  - export TZ=Etc/GMT-7
 after_success:
 - npm run coveralls
