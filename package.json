@@ -1,11 +1,11 @@
 {
   "version": "0.0.1",
-  "name": "filedb",
+  "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "http://techpush.net",
   "repository": {
     "type": "git",
-    "url": "git@github.com:ndaidong/filedb.git"
+    "url": "git@github.com:ndaidong/flat-db.git"
   },
   "author": "Dong Nguyen <ndaidong@gmail.com> (https://twitter.com/ndaidong)",
   "main": "./index.js",
@@ -19,9 +19,11 @@
     "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "dependencies": {
-    "bellajs": "latest"
+    "bellajs": "latest",
+    "promise.prototype.finally": "^1.0.1"
   },
   "devDependencies": {
+    "async": "^2.0.0-rc.5",
     "coveralls": "latest",
     "nyc": "latest",
     "tap-spec": "latest",
