@@ -10,4 +10,6 @@ logs
 
 node_modules
 coverage
+storage
+flatdb-store
 .nyc_output
