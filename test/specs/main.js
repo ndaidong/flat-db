@@ -11,7 +11,6 @@
 var path = require('path');
 var test = require('tape');
 var bella = require('bellajs');
-var async = require('async');
 var exec = require('child_process').execSync;
 
 var rootDir = '../../src/';
@@ -103,112 +102,8 @@ test('Testing Collection basic methods:', (assert) => {
   FlatDB.reset();
   arr.forEach((col) => {
     let x = FlatDB.getCollection(col);
-    console.log(x);
     assert.ok(!x, bella.ucfirst(col) + ' collection must be removed.');
   });
 
   assert.end();
-});
-
-test('Testing Collection data manapulation:', (assert) => {
-
-  FlatDB.configure({
-    path: 'storage/',
-    maxTextLength: 500
-  });
-
-  let col = 'articles';
-  let title = 'Hello world';
-  let id = bella.createId(16);
-  let _id;
-
-  let movie = {
-    type: 'movie',
-    title: 'The Godfather',
-    director: 'Francis Ford Coppola',
-    writer: 'Mario Puzo',
-    imdb: 9.2
-  };
-  let _movieId;
-
-  var C = FlatDB.addCollection(col);
-
-  async.series([
-    (next) => {
-      assert.comment('Add article item');
-      C.add({
-        id: id,
-        title: title
-      }).then((key) => {
-        assert.ok(key, `Must return an article key: "${key}"`);
-        _id = key;
-      }).finally(next);
-    },
-    (next) => {
-      assert.comment('Get article item');
-      C.get(_id).then((item) => {
-        assert.comment('Check article item');
-        assert.equals(item.id, id, `item.id must be "${id}"`);
-        assert.equals(item.title, title, `item.title must be "${title}"`);
-      }).finally(next);
-    },
-    (next) => {
-      assert.comment('Add movie item');
-      C.add(movie).then((key) => {
-        assert.ok(key, `Must return a movie key: "${key}"`);
-        _movieId = key;
-      }).finally(next);
-    },
-    (next) => {
-      assert.comment('Get movie item');
-      C.get(_movieId, 'title director writer imdb').then((item) => {
-        assert.comment('Check movie item');
-        assert.equals(item.title, movie.title, `item.title must be "${movie.title}"`);
-        assert.equals(item.director, movie.director, `item.director must be "${movie.director}"`);
-        assert.equals(item.writer, movie.writer, `item.writer must be "${movie.writer}"`);
-        assert.equals(item.imdb, movie.imdb, `item.imdb must be "${movie.imdb}"`);
-        assert.ok(!item.type, 'It should not contain "type"');
-        assert.ok(!item._id_, 'It should not contain "_id_"');
-        assert.ok(!item._ts_, 'It should not contain "_ts_"');
-      }).finally(next);
-    },
-    (next) => {
-      assert.comment('Remove movie item');
-      C.remove(_movieId).then((item) => {
-        assert.comment('Check movie item');
-        assert.ok(bella.isObject(item), 'Item has been removed');
-      }).finally(next);
-    },
-    (next) => {
-      assert.comment('Empty collection');
-      FlatDB.emptyCollection(col);
-      C.get(_id).then((a) => {
-        assert.equals(a, null, 'Item must be not exist');
-      }).finally(next);
-    },
-    (next) => {
-      assert.comment('Remove collection');
-      FlatDB.removeCollection(col);
-      C.get(_id).then((a) => {
-        assert.equals(a, null, 'Item must be gone with removed collection');
-      }).finally(next);
-    },
-    (next) => {
-      assert.comment('Empty unexisting collection');
-      let re = FlatDB.emptyCollection(col);
-      assert.equals(re, false, 'Result should be falsy');
-      next();
-    },
-    (next) => {
-      assert.comment('Remove unexisting collection');
-      let re = FlatDB.removeCollection(col);
-      assert.equals(re, false, 'Result should be falsy');
-      next();
-    }
-  ], (err) => {
-    if (err) {
-      console.trace(err);
-    }
-    assert.end();
-  });
 });

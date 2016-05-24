@@ -26,29 +26,26 @@ npm install flat-db --save
   var Movie = FlatDB.addCollection('movies');
 
   // add item into "Movie" collection
-  Movie.add({
+  let key = Movie.add({
     type: 'movie',
     title: 'The Godfather',
     director: 'Francis Ford Coppola',
     writer: 'Mario Puzo',
     imdb: 9.2
-  }).then((key) => {
-    console.log(key);
-    // this is the unique ID of item
-    // you can use it to get item
-    // for example
+  });
 
-    Movie.get(key).then((mov) => {
-      console.log(mov);
-    });
+  console.log(key);
+  // this key is the unique ID of item
+  // you can use it to get item
+  // for example
 
-    // you can also remove the above movie
+  let mov =  Movie.get(key);
+  console.log(mov); // output movie info
 
-    Movie.remove(key).then((mov) => {
-      console.log(mov);
-      // now is the last time you use this key to refer to the same movie
-    });
-  }).finally(next);
+  // you can also remove the above movie with key
+  Movie.remove(key);
+  let mov =  Movie.get(key);
+  console.log(mov); // null
 ```
 
 # APIs
@@ -65,9 +62,10 @@ npm install flat-db --save
 FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance with the following methods:
 
 #### Collection instance
- - .add(Object item)
- - .get(String itemKey)
- - .remove(String itemKey)
+ - .add(Object item) // return item key
+ - .update(String itemKey, Object updates) // return item
+ - .get([String itemKey]) // return specified item or the entire collection if no parameter
+ - .remove(String itemKey) // return true if removing success
  - .find(Object criteria) // not implemented
 
 

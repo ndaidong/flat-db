@@ -6,40 +6,47 @@
 var bella = require('bellajs');
 var fs = require('fs');
 
+var Finder = require('./finder');
+
 const EXT = '.fdb';
 
 var getColData = (f) => {
-  return new Promise((resolve, reject) => {
-    let noop = {
-      updatedAt: bella.time(),
-      entries: []
-    };
-    if (!fs.existsSync(f)) {
-      return resolve(noop);
+  let noop = {
+    updatedAt: bella.time(),
+    entries: []
+  };
+  if (!fs.existsSync(f)) {
+    return noop;
+  }
+
+  let s = fs.readFileSync(f, 'utf8');
+  if (!s) {
+    return noop;
+  }
+  try {
+    let o = JSON.parse(s);
+    if (o) {
+      return o;
     }
-    return fs.readFile(f, 'utf8', (err, content) => {
-      if (err) {
-        return reject(err);
-      }
-      try {
-        let o = JSON.parse(content);
-        if (o) {
-          return resolve(o);
-        }
-        return resolve(noop);
-      } catch (e) {
-        return resolve(noop, e);
-      }
-    });
-  });
+    return noop;
+  } catch (e) {
+    noop.error = e;
+    return noop;
+  }
 };
 
 var setColData = (data, f) => {
   if (!fs.existsSync(f)) {
     throw new Error('Missing collection file data while processing');
   }
-  let s = bella.isString(data) ? data : JSON.stringify(data);
-  return fs.writeFileSync(f, s, 'utf8');
+  if (!data || !bella.isObject(data)) {
+    throw new Error('Invalid data. Object required.');
+  }
+  let o = {
+    updatedAt: bella.time(),
+    entries: data.entries || []
+  };
+  return fs.writeFileSync(f, JSON.stringify(o), 'utf8');
 };
 
 var clean = (data, fields = []) => {
@@ -76,77 +83,94 @@ class Collection {
     if (!bella.isObject(item)) {
       throw new Error('Invalid parameter. Object required.');
     }
-    return new Promise((resolve, reject) => {
-      let file = this.file;
-      return getColData(file).then((data) => {
-        let c = data.entries || [];
-        let id = bella.createId(32);
-        item._id_ = id;
-        item._ts_ = bella.time();
-        c.unshift(item);
-        data.entries = c;
-        setColData(data, file);
-        return resolve(id);
-      }).catch((err) => {
-        return reject(err);
-      });
-    });
+    let file = this.file;
+    let data = getColData(file);
+    let c = data.entries || [];
+    let id = bella.createId(32);
+    item._id_ = id;
+    item._ts_ = bella.time();
+    c.unshift(item);
+    data.entries = c;
+    setColData(data, file);
+    return id;
   }
 
   get(id, fields) {
+    let file = this.file;
+    let data = getColData(file);
+    let c = data.entries || [];
+
+    if (!id) {
+      return c;
+    }
     if (!bella.isString(id)) {
       throw new Error('Invalid parameter. String required.');
     }
-    return new Promise((resolve, reject) => {
-      let file = this.file;
-      return getColData(file).then((data) => {
-        let c = data.entries || [];
-        let item;
-        for (let i = 0; i < c.length; i++) {
-          let m = c[i];
-          if (m._id_ === id) {
-            item = clean(m, fields);
-            break;
-          }
-        }
-        return resolve(item || null);
-      }).catch((err) => {
-        return reject(err);
-      });
-    });
+
+    let item;
+    for (let i = 0; i < c.length; i++) {
+      let m = c[i];
+      if (m._id_ === id) {
+        item = clean(m, fields);
+        break;
+      }
+    }
+    return item || null;
+  }
+
+  update(id, obj) {
+    if (!bella.isString(id)) {
+      throw new Error('Invalid parameter. String required.');
+    }
+    let file = this.file;
+    let data = getColData(file);
+    let c = data.entries || [];
+    let item;
+    for (let i = 0; i < c.length; i++) {
+      let m = c[i];
+      if (m._id_ === id) {
+        item = bella.copies(obj, m, true, [ '_id_', '_ts_' ]);
+        c.splice(i, 1, item);
+        break;
+      }
+    }
+
+    if (item) {
+      data.entries = c;
+      setColData(data, file);
+    }
+    return item;
   }
 
   remove(id) {
     if (!bella.isString(id)) {
       throw new Error('Invalid parameter. String required.');
     }
-    return new Promise((resolve, reject) => {
-      let file = this.file;
-      return getColData(file).then((data) => {
-        let c = data.entries || [];
-        let item;
-        for (let i = c.length - 1; i >= 0; i--) {
-          let m = c[i];
-          if (m._id_ === id) {
-            item = m;
-            c.splice(i, 1);
-            break;
-          }
-        }
-        data.entries = c;
-        setColData(data, file);
-        return resolve(item);
-      }).catch((err) => {
-        return reject(err);
-      });
-    });
+    let file = this.file;
+    let data = getColData(file);
+    let c = data.entries || [];
+    let item;
+    for (let i = c.length - 1; i >= 0; i--) {
+      let m = c[i];
+      if (m._id_ === id) {
+        item = m;
+        c.splice(i, 1);
+        break;
+      }
+    }
+    if (item) {
+      data.entries = c;
+      setColData(data, file);
+      return item;
+    }
+    return false;
   }
 
-  find(criteria) {
-    if (!bella.isObject(criteria)) {
-      throw new Error('Invalid parameter. Object required.');
-    }
-    return [];
+  find() {
+    let file = this.file;
+    let data = getColData(file);
+    let c = data.entries || [];
+    return new Finder(c);
   }
 
 }
