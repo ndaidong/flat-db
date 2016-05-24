@@ -62,11 +62,11 @@ npm install flat-db --save
 FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance with the following methods:
 
 #### Collection instance
- - .add(Object item) // return item key
- - .update(String itemKey, Object updates) // return item
- - .get([String itemKey]) // return specified item or the entire collection if no parameter
- - .remove(String itemKey) // return true if removing success
- - .find(Object criteria) // not implemented
+ - .add(Object item)
+ - .update(String itemKey, Object updates)
+ - .get([String itemKey])
+ - .remove(String itemKey)
+ - .find(Object criteria)
 
 
 # Test
