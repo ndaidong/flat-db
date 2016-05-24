@@ -22,21 +22,18 @@ var _conf = {
 
 var _collections = {};
 
-var fixPath = (p) => {
-  if (!p) {
-    return '';
-  }
+var fixPath = (p = '') => {
   p = path.normalize(p);
   p += p.endsWith('/') ? '' : '/';
   return p;
 };
 
-var isValidCol = (name) => {
+var isValidCol = (name = '') => {
   let re = /^([A-Z_])+([_A-Z0-9])+$/i;
   return bella.isString(name) && re.test(name);
 };
 
-var getCollection = (name) => {
+var getCollection = (name = '') => {
   if (!isValidCol(name)) {
     throw new Error('Invalid collection name. Only alphabet and numbers are allowed.');
   }
@@ -45,7 +42,7 @@ var getCollection = (name) => {
   return c;
 };
 
-var getDir = (name) => {
+var getDir = (name = '') => {
   return fixPath(_conf.storeDir + name);
 };
 

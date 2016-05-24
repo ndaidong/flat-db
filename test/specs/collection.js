@@ -61,6 +61,11 @@ test('Testing Collection data manapulation:', (assert) => {
       assert.comment('Add movie item');
       _movieId = C.add(movie);
       assert.ok(_movieId, `Must return a movie key: "${_movieId}"`);
+
+      let addInvalidItem = () => {
+        C.add(123);
+      };
+      assert.throws(addInvalidItem.bind(null, {}), 'Adding invalid item should throw an exception');
       next();
     },
     (next) => {
@@ -74,6 +79,30 @@ test('Testing Collection data manapulation:', (assert) => {
       assert.ok(!item.type, 'It should not contain "type"');
       assert.ok(!item._id_, 'It should not contain "_id_"');
       assert.ok(!item._ts_, 'It should not contain "_ts_"');
+
+      let all = C.get();
+      assert.ok(bella.isArray(all), 'It should return an array');
+
+      let getInvalidId = () => {
+        C.get(1);
+      };
+      assert.throws(getInvalidId.bind(null, {}), 'Getting with invalid ID should throw an exception');
+
+      next();
+    },
+    (next) => {
+      assert.comment('Update movie item');
+      let m = C.update(_movieId, {
+        imdb: 9.5,
+        actors: [ 'Denzel Washington', 'Morgan Freeman' ]
+      });
+      assert.equals(m.imdb, 9.5, 'item.imdb must be 9.5 instead of 9.2');
+      assert.ok(!m.actors, 'It should not contain "actors"');
+
+      let updateNoId = () => {
+        C.update();
+      };
+      assert.throws(updateNoId.bind(null, {}), 'Updating without valid ID should throw an exception');
       next();
     },
     (next) => {
@@ -81,6 +110,14 @@ test('Testing Collection data manapulation:', (assert) => {
       C.remove(_movieId);
       let item = C.get(_movieId);
       assert.equals(item, null, 'Item must be not exist');
+
+      let removing = C.remove('abc');
+      assert.ok(!removing, 'No item found return a unsucess removing');
+
+      let removeNoId = () => {
+        C.remove(10);
+      };
+      assert.throws(removeNoId.bind(null, {}), 'Removing without valid ID should throw an exception');
       next();
     },
     (next) => {

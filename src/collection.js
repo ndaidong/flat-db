@@ -23,25 +23,10 @@ var getColData = (f) => {
   if (!s) {
     return noop;
   }
-  try {
-    let o = JSON.parse(s);
-    if (o) {
-      return o;
-    }
-    return noop;
-  } catch (e) {
-    noop.error = e;
-    return noop;
-  }
+  return JSON.parse(s);
 };
 
-var setColData = (data, f) => {
-  if (!fs.existsSync(f)) {
-    throw new Error('Missing collection file data while processing');
-  }
-  if (!data || !bella.isObject(data)) {
-    throw new Error('Invalid data. Object required.');
-  }
+var setColData = (data = {}, f) => {
   let o = {
     updatedAt: bella.time(),
     entries: data.entries || []

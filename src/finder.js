@@ -7,10 +7,7 @@ var bella = require('bellajs');
 
 class Finder {
 
-  constructor(entries) {
-    if (!bella.isArray(entries)) {
-      throw new Error('Invalid parameter. Array required.');
-    }
+  constructor(entries = []) {
     this.entries = entries;
   }
 
