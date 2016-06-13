@@ -6,7 +6,6 @@
 /* eslint no-undefined: 0*/
 /* eslint no-array-constructor: 0*/
 /* eslint no-new-func: 0*/
-/* eslint no-console: 0*/
 
 var path = require('path');
 var test = require('tape');
@@ -17,8 +16,8 @@ var rootDir = '../../src/';
 var FlatDB = require(path.join(rootDir, 'main'));
 var Collection = require(path.join(rootDir, 'collection'));
 
-var hasRequiredKeys = (o) => {
-  var structure = [
+let hasRequiredKeys = (o) => {
+  let structure = [
     'storeDir'
   ];
 
@@ -45,7 +44,7 @@ test('Testing "configure" method:', (assert) => {
   let cnf = FlatDB.configure();
   assert.ok(bella.isObject(cnf), 'cnf must be an object.');
   assert.ok(hasRequiredKeys(cnf), 'cnf must have all required keys.');
-  exec('rm -rf ' + cnf.storeDir);
+  exec(`rm -rf ${cnf.storeDir}`);
 
   assert.end();
 });
@@ -95,7 +94,7 @@ test('Testing Collection basic methods:', (assert) => {
 
   arr.forEach((col) => {
     FlatDB.addCollection(col);
-    var x = FlatDB.getCollection(col);
+    let x = FlatDB.getCollection(col);
     assert.ok(x, bella.ucfirst(col) + ' collection must be created.');
   });
 

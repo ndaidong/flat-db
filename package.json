@@ -1,5 +1,5 @@
 {
-  "version": "0.0.5",
+  "version": "0.0.6",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "http://techpush.net",
@@ -16,7 +16,8 @@
     "test": "./node_modules/.bin/snyk test && ./node_modules/.bin/tape test/start.js | tap-spec",
     "coverage": "./node_modules/.bin/nyc tape test/start.js | tap-spec",
     "report": "npm run coverage && ./node_modules/.bin/nyc report --reporter=lcov",
-    "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+    "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+    "snyk": "./node_modules/.bin/snyk wizard"
   },
   "dependencies": {
     "bellajs": "latest",

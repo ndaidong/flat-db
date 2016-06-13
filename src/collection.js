@@ -115,7 +115,7 @@ class Collection {
     for (let i = 0; i < c.length; i++) {
       let m = c[i];
       if (m._id_ === id) {
-        item = bella.copies(obj, m, true, [ '_id_', '_ts_' ]);
+        item = bella.copies(obj, m, true, ['_id_', '_ts_']);
         c.splice(i, 1, item);
         break;
       }
