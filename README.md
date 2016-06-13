@@ -69,9 +69,10 @@ FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance w
  - .remove(String itemKey)
  - .find(Object criteria)
 
- ##### Finder APIs
 
- When you call Collection.find(), it would return a CollectionFinder instance with the following chaining methods:
+##### Collection Finder
+
+When you call Collection.find(), it would return a CollectionFinder instance with the following chaining methods:
 
   - .equals(String property, String | Number value)
   - .notEqual(String property, String | Number value)
@@ -80,6 +81,9 @@ FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance w
   - .lt(String property, Number value)
   - .lte(String property, Number value)
   - .matches(String property, RegExp value)
+  - .run()
+
+The result by run() is a Promise.
 
 Examples:
 
@@ -134,9 +138,10 @@ MovieFinder
     console.log(results);
   });
 
-// find items with imdb >= 7.1
+// find items with imdb > 6 and title contains "God"
 MovieFinder
-  .gte('imdb', 7.1)
+  .gt('imdb', 6)
+  .matches('title', /God/)
   .run().then((results) => {
     console.log(results);
   });
