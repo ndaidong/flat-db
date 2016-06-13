@@ -6,7 +6,6 @@
 /* eslint no-undefined: 0*/
 /* eslint no-array-constructor: 0*/
 /* eslint no-new-func: 0*/
-/* eslint no-console: 0*/
 
 var path = require('path');
 var test = require('tape');
@@ -37,15 +36,12 @@ test('Testing Collection data manapulation:', (assert) => {
   };
   let _movieId;
 
-  var C = FlatDB.addCollection(col);
+  let C = FlatDB.addCollection(col);
 
   Promise.series([
     (next) => {
       assert.comment('Add article item');
-      _id = C.add({
-        id: id,
-        title: title
-      });
+      _id = C.add({id, title});
       assert.ok(_id, `Must return an article key: "${_id}"`);
       next();
     },
@@ -94,7 +90,7 @@ test('Testing Collection data manapulation:', (assert) => {
       assert.comment('Update movie item');
       let m = C.update(_movieId, {
         imdb: 9.5,
-        actors: [ 'Denzel Washington', 'Morgan Freeman' ]
+        actors: ['Denzel Washington', 'Morgan Freeman']
       });
       assert.equals(m.imdb, 9.5, 'item.imdb must be 9.5 instead of 9.2');
       assert.ok(!m.actors, 'It should not contain "actors"');

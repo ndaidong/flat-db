@@ -11,6 +11,7 @@ var mkdirp = require('mkdirp').sync;
 
 var Collection = require('./collection');
 
+const MIN_TEXT_LENG = 0;
 const MAX_TEXT_LENG = 10000;
 
 var _conf = {
@@ -48,7 +49,7 @@ var emptyCollection = (col) => {
   let c = getCollection(col);
   if (c) {
     let d = c.dir;
-    exec('rm -rf ' + d);
+    exec(`rm -rf ${d}`);
     return mkdirp(d);
   }
   return false;
@@ -60,7 +61,7 @@ var removeCollection = (col) => {
     let name = c.name;
     _collections[name] = null;
     delete _collections[name];
-    return exec('rm -rf ' + c.dir);
+    return exec(`rm -rf ${c.dir}`);
   }
   return false;
 };
@@ -93,22 +94,32 @@ var configure = (opt = {}) => {
     mkdirp(t);
   }
   let mtl = opt.maxTextLength;
-  if (bella.isNumber(mtl) && mtl > 0 && mtl < MAX_TEXT_LENG) {
+  if (bella.isNumber(mtl) && mtl > MIN_TEXT_LENG && mtl < MAX_TEXT_LENG) {
     _conf.maxTextLength = mtl;
   }
   return _conf;
 };
 
 var FlatDB = {
-  configure: configure,
-  getConfigs: () => {
+  configure(opt) {
+    return configure(opt);
+  },
+  getConfigs() {
     return _conf;
   },
-  addCollection: addCollection,
-  getCollection: getCollection,
-  removeCollection: removeCollection,
-  emptyCollection: emptyCollection,
-  reset: () => {
+  addCollection(col, schema) {
+    return addCollection(col, schema);
+  },
+  getCollection(name) {
+    return getCollection(name);
+  },
+  removeCollection(name) {
+    return removeCollection(name);
+  },
+  emptyCollection(name) {
+    return emptyCollection(name);
+  },
+  reset() {
     _collections = Object.create(null);
     let d = _conf.storeDir;
     exec(`rm -rf ${d}`);
