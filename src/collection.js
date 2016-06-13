@@ -4,6 +4,7 @@
  **/
 
 var bella = require('bellajs');
+
 var fs = require('fs');
 
 var Finder = require('./finder');

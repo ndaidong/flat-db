@@ -85,7 +85,7 @@ test('Testing Collection basic methods:', (assert) => {
   assert.comment('Remove collection');
   FlatDB.removeCollection(exp);
   let check = FlatDB.getCollection(exp);
-  assert.ok(!check, 'Collection must be removed');
+  assert.equals(check, false, 'Collection must be removed');
 
   assert.comment('Reset database');
 
@@ -102,7 +102,7 @@ test('Testing Collection basic methods:', (assert) => {
   FlatDB.reset();
   arr.forEach((col) => {
     let x = FlatDB.getCollection(col);
-    assert.ok(!x, bella.ucfirst(col) + ' collection must be removed.');
+    assert.equals(x, false, bella.ucfirst(col) + ' collection must be removed.');
   });
 
   assert.end();

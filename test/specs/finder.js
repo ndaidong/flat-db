@@ -11,7 +11,7 @@
 var path = require('path');
 var test = require('tape');
 var bella = require('bellajs');
-var async = require('async');
+var Promise = require('promise-wtf');
 
 var rootDir = '../../src/';
 var FlatDB = require(path.join(rootDir, 'main'));
@@ -60,7 +60,7 @@ test('Testing Finder logic:', (assert) => {
     Movie.add(item);
   });
 
-  async.series([
+  Promise.series([
     (next) => {
       assert.comment('Check the Finder instance');
       let MovieFinder = Movie.find();
@@ -68,19 +68,91 @@ test('Testing Finder logic:', (assert) => {
 
       assert.comment('Check the public methods');
       [
-        'equals', 'notEqual', 'includes', 'notInclude', 'gt', 'lt', 'matches'
+        'matches', 'equals', 'notEqual', 'gt', 'lt', 'run'
       ].forEach((m) => {
         assert.ok(bella.isFunction(MovieFinder[m]), `MovieFinder must have method .${m}()`);
       });
       next();
     },
     (next) => {
+      assert.comment('Check Finder.matches() - without "i" flag');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .matches('title', /re/)
+        .run().then((results) => {
+          assert.equals(results.length, 2, 'It must find out 2 items with "re" in the title');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.matches() - with "i" flag');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .matches('title', /re/i)
+        .run().then((results) => {
+          assert.equals(results.length, 3, 'It must find out 3 items with "re" or "Re" in the title');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.matches() - with no result');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .matches('title', /something/i)
+        .run().then((results) => {
+          assert.equals(results.length, 0, 'It must find out 0 item with "something" in the title');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.matches() - with non-exist property');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .matches('star', /something/i)
+        .run().then((results) => {
+          assert.equals(results.length, 0, 'It must find out 0 item with "something" in the "star" field');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.equals()');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .equals('year', 2009)
+        .run().then((results) => {
+          assert.equals(results.length, 1, 'It must find out 1 movie produced in 2009');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.equals() - with non-exist property');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .equals('cost', 1000000)
+        .run().then((results) => {
+          assert.equals(results.length, 0, 'It must find out no movie with cost = 1000000');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.notEqual()');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .notEqual('year', 2009)
+        .run().then((results) => {
+          assert.equals(results.length, 3, 'It must find out 3 movies that were not produced in 2009');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.notEqual() - with non-exist property');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .notEqual('cost', 1000000)
+        .run().then((results) => {
+          assert.equals(results.length, 4, 'It must find out 4 movies with cost != 1000000');
+        }).finally(next);
+    },
+    (next) => {
       assert.comment('Check Finder.gt()');
       let MovieFinder = Movie.find();
       MovieFinder
-        .gt('imdb', 7)
-        .execute().then((results) => {
-          assert.equals(results.length, 2, 'It must find out 2 items with imdb > 7');
+        .gt('imdb', 7.1)
+        .run().then((results) => {
+          assert.equals(results.length, 1, 'It must find out 1 item with imdb > 7.1');
         }).finally(next);
     },
     (next) => {
@@ -89,16 +161,34 @@ test('Testing Finder logic:', (assert) => {
       MovieFinder
         .gt('imdb', 7)
         .gt('year', 1980)
-        .execute().then((results) => {
+        .run().then((results) => {
           assert.equals(results.length, 1, 'It must find out 1 item with imdb > 7 and year > 1980');
         }).finally(next);
     },
     (next) => {
-      assert.comment('Check Finder.gt() with unexisting prop');
+      assert.comment('Check Finder.gt() - with non-exist property');
       let MovieFinder = Movie.find();
       MovieFinder
         .gt('something', 1)
-        .execute().then((results) => {
+        .run().then((results) => {
+          assert.equals(results.length, 0, 'It must return an empty array');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.gte()');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .gte('imdb', 7.1)
+        .run().then((results) => {
+          assert.equals(results.length, 2, 'It must find out 2 items with imdb >= 7.1');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.gte() - with non-exist property');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .gte('something', 1)
+        .run().then((results) => {
           assert.equals(results.length, 0, 'It must return an empty array');
         }).finally(next);
     },
@@ -106,9 +196,9 @@ test('Testing Finder logic:', (assert) => {
       assert.comment('Check Finder.lt()');
       let MovieFinder = Movie.find();
       MovieFinder
-        .lt('imdb', 7)
-        .execute().then((results) => {
-          assert.equals(results.length, 2, 'It must find out 2 items with imdb < 7');
+        .lt('imdb', 7.1)
+        .run().then((results) => {
+          assert.equals(results.length, 2, 'It must find out 2 items with imdb < 7.1');
         }).finally(next);
     },
     (next) => {
@@ -117,23 +207,38 @@ test('Testing Finder logic:', (assert) => {
       MovieFinder
         .lt('imdb', 7)
         .lt('year', 2000)
-        .execute().then((results) => {
+        .run().then((results) => {
           assert.equals(results.length, 1, 'It must find out 1 item with imdb < 7 and year < 2000');
         }).finally(next);
     },
     (next) => {
-      assert.comment('Check Finder.lt() with unexisting prop');
+      assert.comment('Check Finder.lt() - with non-exist property');
       let MovieFinder = Movie.find();
       MovieFinder
         .lt('something', 1)
-        .execute().then((results) => {
+        .run().then((results) => {
+          assert.equals(results.length, 0, 'It must return an empty array');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.lte()');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .lte('imdb', 7.1)
+        .run().then((results) => {
+          assert.equals(results.length, 3, 'It must find out 3 items with imdb <= 7.1');
+        }).finally(next);
+    },
+    (next) => {
+      assert.comment('Check Finder.lte() - with non-exist property');
+      let MovieFinder = Movie.find();
+      MovieFinder
+        .lte('something', 1)
+        .run().then((results) => {
           assert.equals(results.length, 0, 'It must return an empty array');
         }).finally(next);
     }
-  ], (err) => {
-    if (err) {
-      console.trace(err);
-    }
-    assert.end();
-  });
+  ]).catch((err) => {
+    console.trace(err);
+  }).finally(assert.end);
 });

@@ -4,6 +4,7 @@
  **/
 
 var bella = require('bellajs');
+var Promise = require('promise-wtf');
 
 class Finder {
 
@@ -33,46 +34,6 @@ class Finder {
     return this;
   }
 
-  includes(key, val, ignorecase) {
-    if (ignorecase) {
-      key = bella.strtolower(key);
-    }
-    let entries = this.entries;
-    this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
-        let a = item[key];
-        if (bella.isString(a)) {
-          if (ignorecase) {
-            a = bella.strtolower(a);
-          }
-          return a.includes(val);
-        }
-      }
-      return false;
-    });
-    return this;
-  }
-
-  notInclude(key, val, ignorecase) {
-    if (ignorecase) {
-      key = bella.strtolower(key);
-    }
-    let entries = this.entries;
-    this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
-        let a = item[key];
-        if (bella.isString(a)) {
-          if (ignorecase) {
-            a = bella.strtolower(a);
-          }
-          return !a.includes(val);
-        }
-      }
-      return true;
-    });
-    return this;
-  }
-
   gt(key, val) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
@@ -80,6 +41,20 @@ class Finder {
         let a = item[key];
         if (bella.isNumber(a)) {
           return a > val;
+        }
+      }
+      return false;
+    });
+    return this;
+  }
+
+  gte(key, val) {
+    let entries = this.entries;
+    this.entries = entries.filter((item) => {
+      if (bella.hasProperty(item, key)) {
+        let a = item[key];
+        if (bella.isNumber(a)) {
+          return a >= val;
         }
       }
       return false;
@@ -101,6 +76,20 @@ class Finder {
     return this;
   }
 
+  lte(key, val) {
+    let entries = this.entries;
+    this.entries = entries.filter((item) => {
+      if (bella.hasProperty(item, key)) {
+        let a = item[key];
+        if (bella.isNumber(a)) {
+          return a <= val;
+        }
+      }
+      return false;
+    });
+    return this;
+  }
+
   matches(key, reg) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
@@ -115,7 +104,7 @@ class Finder {
     return this;
   }
 
-  execute() {
+  run() {
     return Promise.resolve(this.entries);
   }
 

@@ -11,7 +11,7 @@
 var path = require('path');
 var test = require('tape');
 var bella = require('bellajs');
-var async = require('async');
+var Promise = require('promise-wtf');
 
 var rootDir = '../../src/';
 var FlatDB = require(path.join(rootDir, 'main'));
@@ -39,7 +39,7 @@ test('Testing Collection data manapulation:', (assert) => {
 
   var C = FlatDB.addCollection(col);
 
-  async.series([
+  Promise.series([
     (next) => {
       assert.comment('Add article item');
       _id = C.add({
@@ -146,10 +146,7 @@ test('Testing Collection data manapulation:', (assert) => {
       assert.equals(re, false, 'Result should be falsy');
       next();
     }
-  ], (err) => {
-    if (err) {
-      console.trace(err);
-    }
-    assert.end();
-  });
+  ]).catch((err) => {
+    console.trace(err);
+  }).finally(assert.end);
 });

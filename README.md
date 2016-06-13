@@ -5,6 +5,7 @@ Flat-file based data storage
 ![Travis](https://travis-ci.org/ndaidong/flat-db.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/flat-db/badge.svg?branch=master&noop)](https://coveralls.io/github/ndaidong/flat-db?branch=master)
 ![devDependency Status](https://david-dm.org/ndaidong/flat-db.svg)
+[![Known Vulnerabilities](https://snyk.io/test/npm/flat-db/badge.svg)](https://snyk.io/test/npm/flat-db)
 
 # Setup
 
@@ -68,6 +69,78 @@ FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance w
  - .remove(String itemKey)
  - .find(Object criteria)
 
+ ##### Finder APIs
+
+ When you call Collection.find(), it would return a CollectionFinder instance with the following chaining methods:
+
+  - .equals(String property, String | Number value)
+  - .notEqual(String property, String | Number value)
+  - .gt(String property, Number value)
+  - .gte(String property, Number value)
+  - .lt(String property, Number value)
+  - .lte(String property, Number value)
+  - .matches(String property, RegExp value)
+
+Examples:
+
+```
+
+// configure storage
+FlatDB.configure({
+  path: 'storage/'
+});
+
+// add a collection names "movies"
+let Movie = FlatDB.addCollection('movies');
+
+// add some movies to collection
+let entries = [
+  {
+    title: 'The Godfather',
+    imdb: 9.2
+  },
+  {
+    title: 'Independence Day: Resurgence',
+    imdb: 7.1
+  },
+  {
+    title: 'Free State of Jones',
+    imdb: 6.4
+  },
+  {
+    title: 'Star Trek Beyond',
+    imdb: 5.7
+  }
+];
+
+entries.forEach((item) => {
+  Movie.add(item);
+});
+
+// start finding
+let MovieFinder = Movie.find();
+
+// find items which have "re" in the title
+MovieFinder
+  .matches('title', /re/i)
+  .run().then((results) => {
+    console.log(results);
+  });
+
+// find items with imdb < 7.1
+MovieFinder
+  .lt('imdb', 7.1)
+  .run().then((results) => {
+    console.log(results);
+  });
+
+// find items with imdb >= 7.1
+MovieFinder
+  .gte('imdb', 7.1)
+  .run().then((results) => {
+    console.log(results);
+  });
+```
 
 # Test
 
