@@ -67,7 +67,7 @@ FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance w
  - .update(String itemKey, Object updates)
  - .get([String itemKey])
  - .remove(String itemKey)
- - .find(Object criteria)
+ - .find()
 
 
 ##### Collection Finder
@@ -121,7 +121,16 @@ entries.forEach((item) => {
   Movie.add(item);
 });
 
-// start finding
+// now we can find the expected movies
+Movie
+  .find()
+  .matches('title', /The/)
+  .gt('imdb', 7)
+  .run().then((results) => {
+    console.log(results);
+  });
+
+// or create a CollectionFinder instance to use later
 let MovieFinder = Movie.find();
 
 // find items which have "re" in the title

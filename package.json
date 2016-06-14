@@ -1,11 +1,11 @@
 {
-  "version": "0.0.61",
+  "version": "0.0.62",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "http://techpush.net",
   "repository": {
     "type": "git",
-    "url": "git@github.com:ndaidong/flat-db.git"
+    "url": "https://github.com/ndaidong/flat-db"
   },
   "author": "Dong Nguyen <ndaidong@gmail.com> (https://twitter.com/ndaidong)",
   "main": "./index.js",
@@ -42,7 +42,7 @@
     "ndaidong <ndaidong@gmail.com>"
   ],
   "bugs": {
-    "url": "https://github.com/ndaidong/filedb/issues"
+    "url": "https://github.com/ndaidong/flat-db/issues"
   },
   "directories": {
     "test": "test"
