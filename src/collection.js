@@ -5,16 +5,13 @@
 
 var bella = require('bellajs');
 
-var path = require('path');
 var fs = require('fs');
+
+var fixPath = require('./utils/path');
 
 var Finder = require('./finder');
 
 const EXT = '.fdb';
-
-var fixPath = (p = '') => {
-  return path.normalize(p);
-};
 
 var getColData = (f) => {
   let noop = {

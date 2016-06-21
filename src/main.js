@@ -5,9 +5,10 @@
 
 var bella = require('bellajs');
 var fs = require('fs');
-var path = require('path');
 var exec = require('child_process').execSync;
 var mkdirp = require('mkdirp').sync;
+
+var fixPath = require('./utils/path');
 
 var Collection = require('./collection');
 
@@ -20,10 +21,6 @@ var _conf = {
 };
 
 var _collections = {};
-
-var fixPath = (p = '') => {
-  return path.normalize(p);
-};
 
 var getDir = (name = '') => {
   return fixPath(_conf.storeDir + '/' + name);
@@ -88,7 +85,7 @@ var loadPersistentData = () => {
   if (dirs && dirs.length) {
     dirs.forEach((item) => {
       let d = item.toLowerCase();
-      let p = path.normalize(sd + '/' + d);
+      let p = fixPath(sd + '/' + d);
       let c = new Collection(d, p);
       _collections[d] = c;
     });

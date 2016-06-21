@@ -32,7 +32,7 @@ test('Testing "configure" method:', (assert) => {
     path: 'storage'
   });
 
-  let exp = 'storage/';
+  let exp = 'storage';
 
   assert.comment('(Call "config" is C, so:)');
   assert.ok(bella.isObject(config), 'C must be an object.');
@@ -73,13 +73,8 @@ test('Testing Collection basic methods:', (assert) => {
   assert.ok(userCol instanceof Collection, 'userCol must be instance of Collection class.');
   assert.equals(userCol.name, exp, `userCol.name must be "${exp}"`);
 
-  let dir = `storage/${exp}/`;
+  let dir = `storage/${exp}`;
   assert.equals(userCol.dir, dir, `userCol.dir must be "${dir}"`);
-
-  let dupCollection = () => {
-    FlatDB.addCollection(exp);
-  };
-  assert.throws(dupCollection.bind(null, {}), 'Adding duplicate name should throw an exception');
 
   assert.comment('Remove collection');
   FlatDB.removeCollection(exp);
