@@ -1,8 +1,8 @@
 {
-  "version": "0.0.62",
+  "version": "1.0.0",
   "name": "flat-db",
   "description": "Flat-file based data storage",
-  "homepage": "http://techpush.net",
+  "homepage": "https://www.npmjs.com/package/flat-db",
   "repository": {
     "type": "git",
     "url": "https://github.com/ndaidong/flat-db"
@@ -20,9 +20,9 @@
     "snyk": "./node_modules/.bin/snyk wizard"
   },
   "dependencies": {
-    "bellajs": "latest",
-    "mkdirp": "latest",
-    "promise-wtf": "latest"
+    "bellajs": "^5.2.3",
+    "mkdirp": "^0.5.1",
+    "promise-wtf": "^0.1.25"
   },
   "devDependencies": {
     "coveralls": "latest",
