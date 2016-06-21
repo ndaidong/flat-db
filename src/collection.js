@@ -5,11 +5,16 @@
 
 var bella = require('bellajs');
 
+var path = require('path');
 var fs = require('fs');
 
 var Finder = require('./finder');
 
 const EXT = '.fdb';
+
+var fixPath = (p = '') => {
+  return path.normalize(p);
+};
 
 var getColData = (f) => {
   let noop = {
@@ -55,7 +60,7 @@ var clean = (data, fields = []) => {
 class Collection {
 
   constructor(name, dir, schema = {}) {
-    let file = dir + name + EXT;
+    let file = fixPath(dir + '/' + name + EXT);
     if (!fs.existsSync(file)) {
       fs.writeFileSync(file, '', 'utf8');
     }

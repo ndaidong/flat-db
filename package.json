@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.10",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
@@ -17,7 +17,8 @@
     "coverage": "./node_modules/.bin/nyc tape test/start.js | tap-spec",
     "report": "npm run coverage && ./node_modules/.bin/nyc report --reporter=lcov",
     "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "snyk": "./node_modules/.bin/snyk wizard"
+    "snyk": "./node_modules/.bin/snyk wizard",
+    "try": "node ./test/manual"
   },
   "dependencies": {
     "bellajs": "^5.2.3",

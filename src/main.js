@@ -22,13 +22,11 @@ var _conf = {
 var _collections = {};
 
 var fixPath = (p = '') => {
-  p = path.normalize(p);
-  p += p.endsWith('/') ? '' : '/';
-  return p;
+  return path.normalize(p);
 };
 
 var getDir = (name = '') => {
-  return fixPath(_conf.storeDir + name);
+  return fixPath(_conf.storeDir + '/' + name);
 };
 
 var isValidCol = (name = '') => {
@@ -71,8 +69,9 @@ var addCollection = (col, schema) => {
     throw new Error('Invalid collection name. Only alphabet and numbers are allowed.');
   }
   if (_collections[col]) {
-    throw new Error('Duplicate collection. Please use another name.');
+    return _collections[col];
   }
+
   let name = bella.strtolower(col);
   let d = getDir(name);
   if (!fs.existsSync(d)) {
@@ -81,6 +80,19 @@ var addCollection = (col, schema) => {
   let c = new Collection(name, d, schema);
   _collections[name] = c;
   return c;
+};
+
+var loadPersistentData = () => {
+  let sd = _conf.storeDir;
+  let dirs = fs.readdirSync(sd, 'utf8');
+  if (dirs && dirs.length) {
+    dirs.forEach((item) => {
+      let d = item.toLowerCase();
+      let p = path.normalize(sd + '/' + d);
+      let c = new Collection(d, p);
+      _collections[d] = c;
+    });
+  }
 };
 
 var configure = (opt = {}) => {
@@ -97,6 +109,8 @@ var configure = (opt = {}) => {
   if (bella.isNumber(mtl) && mtl > MIN_TEXT_LENG && mtl < MAX_TEXT_LENG) {
     _conf.maxTextLength = mtl;
   }
+
+  loadPersistentData();
   return _conf;
 };
 
