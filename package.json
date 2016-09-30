@@ -1,5 +1,5 @@
 {
-  "version": "1.0.10",
+  "version": "1.1.0",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
@@ -7,26 +7,31 @@
     "type": "git",
     "url": "https://github.com/ndaidong/flat-db"
   },
-  "author": "Dong Nguyen <ndaidong@gmail.com> (https://twitter.com/ndaidong)",
+  "author": "@ndaidong",
   "main": "./index.js",
   "engines": {
     "node": ">= 6.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/tape test/start.js | tap-spec",
-    "coverage": "./node_modules/.bin/nyc tape test/start.js | tap-spec",
-    "report": "npm run coverage && ./node_modules/.bin/nyc report --reporter=lcov",
-    "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "snyk": "./node_modules/.bin/snyk wizard",
+    "lint": "eslint ./src ./test",
+    "snyk": "snyk test",
+    "tape": "nyc tape test/start.js | tap-spec",
+    "report": "nyc report --reporter=lcov",
+    "pretest": "npm run lint && npm run snyk",
+    "test": "npm run tape",
+    "posttest": "npm run report",
+    "coveralls": "npm test && cat ./coverage/lcov.info | coveralls",
     "try": "node ./test/manual"
   },
   "dependencies": {
-    "bellajs": "^5.2.3",
-    "mkdirp": "^0.5.1",
-    "promise-wtf": "^0.1.25"
+    "bellajs": "5.*.*",
+    "mkdirp": "0.*.*",
+    "promise-wtf": "1.*.*"
   },
   "devDependencies": {
     "coveralls": "latest",
+    "eslint": "latest",
+    "eslint-config-ggc": "latest",
     "nyc": "latest",
     "snyk": "latest",
     "tap-spec": "latest",
@@ -38,14 +43,5 @@
     "nosql",
     "util"
   ],
-  "license": "MIT",
-  "maintainers": [
-    "ndaidong <ndaidong@gmail.com>"
-  ],
-  "bugs": {
-    "url": "https://github.com/ndaidong/flat-db/issues"
-  },
-  "directories": {
-    "test": "test"
-  }
+  "license": "MIT"
 }
