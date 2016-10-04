@@ -2,9 +2,9 @@
 Flat-file based data storage
 
 [![NPM](https://badge.fury.io/js/flat-db.svg)](https://badge.fury.io/js/flat-db)
-![Travis](https://travis-ci.org/ndaidong/flat-db.svg?branch=master)
+[![Build Status](https://travis-ci.org/ndaidong/flat-db.svg?branch=master)](https://travis-ci.org/ndaidong/flat-db)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/flat-db/badge.svg?branch=master&noop)](https://coveralls.io/github/ndaidong/flat-db?branch=master)
-[![Dependency Status](https://www.versioneye.com/user/projects/57e8df6079806f00398347d9/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57e8df6079806f00398347d9)
+[![Dependency Status](https://gemnasium.com/badges/github.com/ndaidong/flat-db.svg)](https://gemnasium.com/github.com/ndaidong/flat-db)
 [![Known Vulnerabilities](https://snyk.io/test/npm/flat-db/badge.svg)](https://snyk.io/test/npm/flat-db)
 
 # Setup
