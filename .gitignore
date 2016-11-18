@@ -5,11 +5,10 @@ logs
 
 # Runtime data
 *.pid
-*.lock
 *.seed
 
 node_modules
 coverage
-storage
-flatdb-store
 .nyc_output
+
+storage
