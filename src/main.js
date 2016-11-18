@@ -35,7 +35,7 @@ var getCollection = (name = '') => {
   if (!isValidCol(name)) {
     throw new Error('Invalid collection name. Only alphabet and numbers are allowed.');
   }
-  let col = bella.strtolower(name);
+  let col = name.toLowerCase();
   let c = _collections[col] || false;
   return c;
 };
@@ -69,7 +69,7 @@ var addCollection = (col, schema) => {
     return _collections[col];
   }
 
-  let name = bella.strtolower(col);
+  let name = col.toLowerCase();
   let d = getDir(name);
   if (!fs.existsSync(d)) {
     mkdirp(d);

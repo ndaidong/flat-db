@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
+  "version": "1.1.2",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
@@ -24,9 +24,9 @@
     "try": "node ./test/manual"
   },
   "dependencies": {
-    "bellajs": "5.*.*",
-    "mkdirp": "0.*.*",
-    "promise-wtf": "1.*.*"
+    "bellajs": "6.x.x",
+    "mkdirp": "0.x.x",
+    "promise-wtf": "1.x.x"
   },
   "devDependencies": {
     "coveralls": "latest",
