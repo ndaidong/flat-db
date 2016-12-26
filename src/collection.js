@@ -54,6 +54,40 @@ var clean = (data, fields = []) => {
   return o;
 };
 
+var def = (o, key, val, opt = {}) => {
+  let {
+    enumerable = false,
+    configurable = false,
+    writable = false,
+    value = val
+  } = opt;
+  Object.defineProperty(o, key, {
+    enumerable,
+    configurable,
+    writable,
+    value
+  });
+  return o;
+};
+
+var defineSchema = (props) => {
+  let conf = {
+    writable: false,
+    enumerable: false,
+    configurable: false
+  };
+
+  let schema = {};
+  for (let key in props) {
+    if (props.hasOwnProperty(key)) {
+      let value = props[key];
+      schema = def(schema, key, value, conf);
+    }
+  }
+
+  return schema;
+};
+
 class Collection {
 
   constructor(name, dir, schema = {}) {
@@ -64,23 +98,46 @@ class Collection {
     this.name = name;
     this.dir = dir;
     this.file = file;
-    this.schema = schema;
+    this.schema = defineSchema(schema);
   }
 
   add(item) {
-    if (!bella.isObject(item)) {
+    if (!bella.isObject(item) && !bella.isArray(item)) {
       throw new Error('Invalid parameter. Object required.');
     }
+    let entries = bella.isArray(item) ? item : [item];
+
     let file = this.file;
     let data = getColData(file);
-    let c = data.entries || [];
-    let id = bella.createId(32);
-    item._id_ = id;
-    item._ts_ = bella.time();
-    c.unshift(item);
-    data.entries = c;
+    let currentEntries = data.entries || [];
+    let schema = this.schema;
+    let noSchema = bella.isEmpty(schema);
+
+    let added = [];
+
+    entries.map((entry) => {
+      let id = bella.createId(32);
+      added.push(id);
+      entry._id_ = id;
+      entry._ts_ = bella.time();
+
+      if (!noSchema) {
+        let _item = Object.assign({}, schema);
+        for (let key in entry) {
+          if (bella.hasProperty(item, key)) {
+            _item[key] = entry[key];
+          }
+        }
+        entry = _item;
+      }
+      currentEntries.unshift(entry);
+      return entry;
+    });
+
+    data.entries = currentEntries;
     setColData(data, file);
-    return id;
+
+    return added.length === 1 ? added[0] : added;
   }
 
   get(id, fields) {

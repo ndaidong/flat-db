@@ -15,6 +15,7 @@ var Promise = require('promise-wtf');
 var rootDir = '../../src/';
 var FlatDB = require(path.join(rootDir, 'main'));
 
+
 test('Testing Collection data manapulation:', (assert) => {
 
   FlatDB.configure({
@@ -145,4 +146,30 @@ test('Testing Collection data manapulation:', (assert) => {
   ]).catch((err) => {
     console.trace(err);
   }).finally(assert.end);
+});
+
+test('Testing Collection with schema:', (assert) => {
+
+  FlatDB.configure({
+    path: 'storage/',
+    maxTextLength: 500
+  });
+
+  let User = FlatDB.addCollection('users', {
+    username: '',
+    email: '',
+    age: 0
+  });
+
+  assert.comment('New item passed via schema');
+  let id = User.add({
+    username: 'bob',
+    email: 'bob@mail.com',
+    location: 'USA'
+  });
+
+  let user = User.get(id);
+  console.log(user);
+
+  assert.end();
 });
