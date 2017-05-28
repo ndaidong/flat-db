@@ -57,10 +57,18 @@ test('Test Finder class methods:', (assert) => {
 
   assert.comment('Check the public methods');
   [
-    'matches', 'equals', 'notEqual', 'gt', 'lt', 'run'
+    'matches', 'equals', 'notEqual', 'gt', 'lt', 'skip', 'limit', 'run'
   ].forEach((m) => {
     assert.ok(isFunction(MovieFinder[m]), `MovieFinder must have method .${m}()`);
   });
+
+  assert.comment('Check Finder.skip()');
+  let skips = Movie.find().skip(2).run();
+  assert.equals(skips.length, 2, 'It must find out 2 items with skip(2)');
+
+  assert.comment('Check Finder.limit()');
+  let limits = Movie.find().limit(1).run();
+  assert.equals(limits.length, 1, 'It must find out 1 item with limit(1)');
 
   assert.comment('Check Finder.matches() - without "i" flag');
 
