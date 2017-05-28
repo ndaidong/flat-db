@@ -107,6 +107,8 @@ console.log(MovieFinder);
   - .lt(String property, Number value)
   - .lte(String property, Number value)
   - .matches(String property, RegExp value)
+  - .skip(Number value)
+  - .limit(Number value)
   - .run()
 
 
@@ -150,6 +152,8 @@ let results = Movie
             .find()
             .gt('imdb', 6)
             .matches('title', /God/)
+            .skip(2)
+            .limit(2)
             .run();
 console.log(results);
 
