@@ -121,9 +121,7 @@ FlatDB.configure({
   dir: 'storage/'
 });
 
-let Movie = new FlatDB.Collection('movies', {
-
-});
+let Movie = new FlatDB.Collection('movies');
 
 // add some movies to collection
 let entries = [

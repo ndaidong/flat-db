@@ -6,7 +6,8 @@
 var test = require('tape');
 
 var {
-  isFunction
+  isFunction,
+  isString
 } = require('bellajs');
 
 var FlatDB = require('../../src/main');
@@ -48,7 +49,8 @@ test('Test FlatDB.Collection class:', (assert) => {
   });
 
   assert.comment('Add sample data with Collection.add()');
-  userCollection.add(sampleData);
+  let keys = userCollection.add(sampleData);
+  assert.equals(keys.length, 3, 'userCollection.add(sampleData) must return 3 keys');
 
   assert.comment('Get all collection entries with Collection.all()');
   let users = userCollection.all();
@@ -108,6 +110,19 @@ test('Test FlatDB.Collection class:', (assert) => {
   }, true, `userCollection.remove() must throw error`);
 
 
+  assert.comment('Test if collection single item add() return a key');
+  let key = userCollection.add({
+    name: 'Zic',
+    age: 19
+  });
+  assert.ok(isString(key), 'userCollection.add(user) must return a key string');
+  assert.equals(key.length, 32, 'key.length must be 32');
+
+  assert.comment('Test if collection update() return a mutual item');
+  let mutual = userCollection.update(key, {name: 'Lina'});
+  assert.equals(mutual.name, 'Lina', 'mutual.name must be "Lina"');
+
+  assert.comment('Test collection find()');
   let finder = userCollection.find();
   assert.ok(finder instanceof Finder, 'userCollection.find() must return an instance of Finder');
 
