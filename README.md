@@ -13,48 +13,23 @@ Flat-file based data storage
 npm install flat-db --save
 ```
 
-# Usage
-
-```
-  var FlatDB = require('flat-db');
-
-  // configure path to storage dir
-  FlatDB.configure({
-    dir: './storage'
-  });
-
-  // add collection
-  var Movie = new FlatDB.Collection('movies');
-
-  // add item into "Movie" collection
-  let key = Movie.add({
-    type: 'movie',
-    title: 'The Godfather',
-    director: 'Francis Ford Coppola',
-    writer: 'Mario Puzo',
-    imdb: 9.2
-  });
-
-  console.log(key);
-  // this key is the unique ID of item
-  // you can use it to get item
-  // for example
-
-  let mov =  Movie.get(key);
-  console.log(mov); // output movie info
-
-  // you can also remove the above movie with key
-  Movie.remove(key);
-  let mov =  Movie.get(key);
-  console.log(mov); // null
-```
-
 # APIs
 
 ### FlatDB
  - .configure(Object options)
 
-#### FlatDB.Collection(String name, Object schema) constructor
+```
+var FlatDB = require('flat-db');
+
+// configure path to storage dir
+FlatDB.configure({
+  dir: './storage'
+});
+
+// since now, everything will be saved under ./storage
+```
+
+ - .Collection(String name, Object schema) - constructor
 
 ```
 let Movie = new FlatDB.Collection('movies', {
@@ -63,7 +38,7 @@ let Movie = new FlatDB.Collection('movies', {
 });
 ```
 
-The schema is optional. If the schema was defined, any new item were added would be founded based this schema's structure and data type.
+The schema is optional. Once it was defined, any new item come later would be compared with this schema's structure and data type.
 
 #### FlatDB.Collection class instance
  - .add(Object item)
