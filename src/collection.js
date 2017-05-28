@@ -3,221 +3,230 @@
  * @ndaidong
  **/
 
-var bella = require('bellajs');
+var debug = require('debug');
+var info = debug('flatdb:info');
 
-var fs = require('fs');
+var {
+  time,
+  createId,
+  hasProperty,
+  isObject,
+  isArray,
+  isEmpty,
+  isString
+} = require('bellajs');
 
-var fixPath = require('./utils/path');
+var {
+  fixPath,
+  readFile,
+  delFile,
+  writeFile,
+  normalize
+} = require('./utils');
+
+var config = require('./configs');
 
 var Finder = require('./finder');
 
-const EXT = '.fdb';
 
-var getColData = (f) => {
-  let noop = {
-    updatedAt: bella.time(),
-    entries: []
-  };
-  if (!fs.existsSync(f)) {
-    return noop;
-  }
-
-  let s = fs.readFileSync(f, 'utf8');
-  if (!s) {
-    return noop;
-  }
-  return JSON.parse(s);
-};
-
-var setColData = (data = {}, f) => {
-  let o = {
-    updatedAt: bella.time(),
-    entries: data.entries || []
-  };
-  return fs.writeFileSync(f, JSON.stringify(o), 'utf8');
-};
-
-var clean = (data, fields = []) => {
-  let keys = [];
-  if (bella.isString(fields)) {
-    keys = fields.split(' ');
-  }
-  let o = Object.assign({}, data);
-  if (keys.length > 0) {
-    let a = {};
-    for (let i = 0; i < keys.length; i++) {
-      let k = keys[i];
-      a[k] = o[k];
-    }
-    o = a;
-  }
-  return o;
-};
-
-var def = (o, key, val, opt = {}) => {
-  let {
-    enumerable = false,
-    configurable = false,
-    writable = false,
-    value = val
-  } = opt;
-  Object.defineProperty(o, key, {
-    enumerable,
-    configurable,
-    writable,
-    value
-  });
-  return o;
-};
-
-var defineSchema = (props) => {
-  let conf = {
-    writable: false,
-    enumerable: false,
-    configurable: false
-  };
-
-  let schema = {};
-  for (let key in props) {
-    if (props.hasOwnProperty(key)) {
-      let value = props[key];
-      schema = def(schema, key, value, conf);
-    }
-  }
-
-  return schema;
-};
+var C = new Map();
 
 class Collection {
 
-  constructor(name, dir, schema = {}) {
-    let file = fixPath(dir + '/' + name + EXT);
-    if (!fs.existsSync(file)) {
-      fs.writeFileSync(file, '', 'utf8');
+  constructor(name, schema = {}) {
+
+    let n = normalize(name);
+    if (!n) {
+      throw new Error(`Invalid collection name "${name}"`);
     }
-    this.name = name;
-    this.dir = dir;
+
+    let c = C.get(n);
+    if (c) {
+      return c;
+    }
+
+    this.name = n;
+    this.schema = schema;
+
+    this.lastModified = time();
+    this.entries = [];
+
+    let {
+      dir,
+      ext
+    } = config;
+
+    let file = fixPath(`${dir}/${n}${ext}`);
+
     this.file = file;
-    this.schema = defineSchema(schema);
+
+    this.status = 0;
+
+    let data = readFile(file);
+    if (data) {
+      let {
+        schema: cschema,
+        lastModified,
+        entries
+      } = data;
+
+      this.schema = isEmpty(schema) ? cschema : schema;
+      this.lastModified = lastModified;
+      this.entries = entries;
+    }
+
+    C.set(n, this);
+
+    return this;
+  }
+
+  onchange() {
+    let lastModified = time();
+    this.lastModified = lastModified;
+    writeFile(this.file, {
+      name: this.name,
+      lastModified,
+      schema: this.schema,
+      entries: this.all()
+    });
+  }
+
+  all() {
+    return [...this.entries];
+  }
+
+  count() {
+    return this.entries.length;
   }
 
   add(item) {
-    if (!bella.isObject(item) && !bella.isArray(item)) {
+
+    if (!isObject(item) && !isArray(item)) {
       throw new Error('Invalid parameter. Object required.');
     }
-    let entries = bella.isArray(item) ? item : [item];
 
-    let file = this.file;
-    let data = getColData(file);
-    let currentEntries = data.entries || [];
+    let entries = this.all();
+
     let schema = this.schema;
-    let noSchema = bella.isEmpty(schema);
+    let noSchema = isEmpty(schema);
 
+    let data = isArray(item) ? item : [item];
     let added = [];
 
-    entries.map((entry) => {
-      let id = bella.createId(32);
+    let newEntries = data.map((entry) => {
+      let id = createId(32);
       added.push(id);
       entry._id_ = id;
-      entry._ts_ = bella.time();
+      entry._ts_ = time();
 
       if (!noSchema) {
-        let _item = Object.assign({}, schema);
+        let _item = Object.assign({
+          _id_: '',
+          _ts_: 0
+        }, schema);
         for (let key in entry) {
-          if (bella.hasProperty(item, key)) {
+          if (hasProperty(item, key) && typeof entry[key] === typeof _item[key]) {
             _item[key] = entry[key];
           }
         }
         entry = _item;
       }
-      currentEntries.unshift(entry);
       return entry;
     });
 
-    data.entries = currentEntries;
-    setColData(data, file);
-
-    return added.length === 1 ? added[0] : added;
+    let t = added.length;
+    if (t > 0) {
+      this.entries = entries.concat(newEntries);
+      this.onchange();
+    }
+    return t === 1 ? added[0]._id_ : added.map((a) => {
+      return a._id_;
+    });
   }
 
-  get(id, fields) {
-    let file = this.file;
-    let data = getColData(file);
-    let c = data.entries || [];
+  get(id) {
 
-    if (!id) {
-      return c;
-    }
-    if (!bella.isString(id)) {
+    if (!isString(id)) {
       throw new Error('Invalid parameter. String required.');
     }
 
-    let item;
-    for (let i = 0; i < c.length; i++) {
-      let m = c[i];
-      if (m._id_ === id) {
-        item = clean(m, fields);
-        break;
-      }
-    }
-    return item || null;
+    let entries = this.all();
+
+    let candidates = entries.filter((item) => {
+      return item._id_ === id;
+    });
+
+    return candidates.length > 0 ? candidates[0] : null;
   }
 
-  update(id, obj) {
-    if (!bella.isString(id)) {
+  update(id, data) {
+
+    if (!isString(id)) {
       throw new Error('Invalid parameter. String required.');
     }
-    let file = this.file;
-    let data = getColData(file);
-    let c = data.entries || [];
-    let item;
-    for (let i = 0; i < c.length; i++) {
-      let m = c[i];
-      if (m._id_ === id) {
-        item = bella.copies(obj, m, true, ['_id_', '_ts_']);
-        c.splice(i, 1, item);
-        break;
+
+    let entries = this.all();
+    let changed = false;
+
+    let k = entries.findIndex((el) => {
+      return el._id_ === id;
+    });
+
+    if (k >= 0) {
+
+      let obj = entries[k];
+      for (let key in obj) {
+        if (key !== '_id_' && hasProperty(data, key) && data[key] !== obj[key]) {
+          obj[key] = data[key];
+          changed = true;
+        }
       }
+
+      if (!changed) {
+        info('Nothing to update');
+        return false;
+      }
+
+      obj._ts_ = time();
+      entries[k] = obj;
+      this.onchange();
+      info(`Updated an item: ${id}`);
+      return obj;
     }
 
-    if (item) {
-      data.entries = c;
-      setColData(data, file);
-    }
-    return item;
+    return false;
   }
 
   remove(id) {
-    if (!bella.isString(id)) {
+    if (!isString(id)) {
       throw new Error('Invalid parameter. String required.');
     }
-    let file = this.file;
-    let data = getColData(file);
-    let c = data.entries || [];
-    let item;
-    for (let i = c.length - 1; i >= 0; i--) {
-      let m = c[i];
-      if (m._id_ === id) {
-        item = m;
-        c.splice(i, 1);
-        break;
-      }
+
+    let entries = this.all();
+    let k = entries.findIndex((el) => {
+      return el._id_ === id;
+    });
+
+    if (k >= 0) {
+      entries.splice(k, 1);
+      this.entries = entries;
+      this.onchange();
+      info(`Removed an item: ${id}`);
+      return true;
     }
-    if (item) {
-      data.entries = c;
-      setColData(data, file);
-      return item;
-    }
+
     return false;
   }
 
   find() {
-    let file = this.file;
-    let data = getColData(file);
-    let c = data.entries || [];
-    return new Finder(c);
+    return new Finder(this.all());
   }
 
+  reset() {
+    this.lastModified = time();
+    this.entries = [];
+    delFile(this.file);
+  }
 }
 
 module.exports = Collection;

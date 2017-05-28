@@ -3,173 +3,147 @@
  * @ndaidong
  */
 
-/* eslint no-undefined: 0*/
-/* eslint no-array-constructor: 0*/
-/* eslint no-new-func: 0*/
-
-var path = require('path');
 var test = require('tape');
-var bella = require('bellajs');
-var Promise = require('promise-wtf');
 
-var rootDir = '../../src/';
-var FlatDB = require(path.join(rootDir, 'main'));
+var {
+  isFunction
+} = require('bellajs');
 
+var FlatDB = require('../../src/main');
+var Finder = require('../../src/finder');
 
-test('Testing Collection data manapulation:', (assert) => {
+test('Test FlatDB.Collection class:', (assert) => {
 
-  FlatDB.configure({
-    path: 'storage/',
-    maxTextLength: 500
+  let userCollection = new FlatDB.Collection('users');
+
+  let methods = [
+    'all',
+    'add',
+    'get',
+    'update',
+    'remove',
+    'find',
+    'reset'
+  ];
+
+  let sampleData = [
+    {
+      name: 'Alice',
+      age: 16
+    },
+    {
+      name: 'Bob',
+      age: 15
+    },
+    {
+      name: 'Kelly',
+      age: 17
+    }
+  ];
+
+  assert.ok(userCollection instanceof FlatDB.Collection, 'userCollection must be instance of FlatDB.Collection');
+
+  methods.forEach((met) => {
+    assert.ok(isFunction(userCollection[met]), `userCollection must have the method .${met}()`);
   });
 
-  let col = 'articles';
-  let title = 'Hello world';
-  let id = bella.createId(16);
-  let _id;
+  assert.comment('Add sample data with Collection.add()');
+  userCollection.add(sampleData);
 
-  let movie = {
-    type: 'movie',
-    title: 'The Godfather',
-    director: 'Francis Ford Coppola',
-    writer: 'Mario Puzo',
-    imdb: 9.2
-  };
-  let _movieId;
+  assert.comment('Get all collection entries with Collection.all()');
+  let users = userCollection.all();
+  assert.equals(users.length, 3, 'userCollection.all() must return 3 entries');
 
-  let C = FlatDB.addCollection(col);
+  assert.comment('Get specific entry with Collection.get()');
 
-  Promise.series([
-    (next) => {
-      assert.comment('Add article item');
-      _id = C.add({id, title});
-      assert.ok(_id, `Must return an article key: "${_id}"`);
-      next();
-    },
-    (next) => {
-      assert.comment('Get article item');
-      let item = C.get(_id);
-      assert.comment('Check article item');
-      assert.equals(item.id, id, `item.id must be "${id}"`);
-      assert.equals(item.title, title, `item.title must be "${title}"`);
-      next();
-    },
-    (next) => {
-      assert.comment('Add movie item');
-      _movieId = C.add(movie);
-      assert.ok(_movieId, `Must return a movie key: "${_movieId}"`);
+  let k = 0;
+  users.forEach((u) => {
+    let user = userCollection.get(u._id_);
+    let ref = sampleData[k];
+    assert.equals(user.name, ref.name, `user.name must be "${ref.name}"`);
+    assert.equals(user.age, ref.age, `user.age must be "${ref.age}"`);
+    k++;
+  });
 
-      let addInvalidItem = () => {
-        C.add(123);
-      };
-      assert.throws(addInvalidItem.bind(null, {}), 'Adding invalid item should throw an exception');
-      next();
-    },
-    (next) => {
-      assert.comment('Get movie item');
-      let item = C.get(_movieId, 'title director writer imdb');
-      assert.comment('Check movie item');
-      assert.equals(item.title, movie.title, `item.title must be "${movie.title}"`);
-      assert.equals(item.director, movie.director, `item.director must be "${movie.director}"`);
-      assert.equals(item.writer, movie.writer, `item.writer must be "${movie.writer}"`);
-      assert.equals(item.imdb, movie.imdb, `item.imdb must be "${movie.imdb}"`);
-      assert.ok(!item.type, 'It should not contain "type"');
-      assert.ok(!item._id_, 'It should not contain "_id_"');
-      assert.ok(!item._ts_, 'It should not contain "_ts_"');
+  assert.comment('Update specific entry with Collection.update()');
+  let alice = users[0];
+  let {_id_: id} = alice;
+  userCollection.update(id, {name: 'Ecila'});
+  let ecila = userCollection.get(id);
+  assert.equals(ecila.name, 'Ecila', `ecila.name must be "Ecila"`);
+  assert.equals(ecila.age, alice.age, `ecila.age must be "${alice.age}"`);
 
-      let all = C.get();
-      assert.ok(bella.isArray(all), 'It should return an array');
+  assert.comment('Test exceptions with bad input');
 
-      let getInvalidId = () => {
-        C.get(1);
-      };
-      assert.throws(getInvalidId.bind(null, {}), 'Getting with invalid ID should throw an exception');
+  let badGet = userCollection.get('abc');
+  assert.equals(badGet, null, `userCollection.get('abc') must return null`);
 
-      next();
-    },
-    (next) => {
-      assert.comment('Update movie item');
-      let m = C.update(_movieId, {
-        imdb: 9.5,
-        actors: ['Denzel Washington', 'Morgan Freeman']
-      });
-      assert.equals(m.imdb, 9.5, 'item.imdb must be 9.5 instead of 9.2');
-      assert.ok(!m.actors, 'It should not contain "actors"');
+  let badUpdate = userCollection.update('abc', {name: 'Tom'});
+  assert.equals(badUpdate, false, `userCollection.update('unexistKey') must return false`);
 
-      let updateNoId = () => {
-        C.update();
-      };
-      assert.throws(updateNoId.bind(null, {}), 'Updating without valid ID should throw an exception');
-      next();
-    },
-    (next) => {
-      assert.comment('Remove movie item');
-      C.remove(_movieId);
-      let item = C.get(_movieId);
-      assert.equals(item, null, 'Item must be not exist');
+  let nochangeUpdate = userCollection.update(id, {name: 'Ecila'});
+  assert.equals(nochangeUpdate, false, `userCollection.update(id, {name: 'Ecila'}) must return false`);
 
-      let removing = C.remove('abc');
-      assert.ok(!removing, 'No item found return a unsucess removing');
+  assert.throws(() => {
+    return new FlatDB.Collection('&*^*(&^(*()');
+  }, true, `new FlatDB.Collection('&*^*(&^(*()') must throw error`);
 
-      let removeNoId = () => {
-        C.remove(10);
-      };
-      assert.throws(removeNoId.bind(null, {}), 'Removing without valid ID should throw an exception');
-      next();
-    },
-    (next) => {
-      assert.comment('Empty collection');
-      FlatDB.emptyCollection(col);
-      let a = C.get(_id);
-      assert.equals(a, null, 'Item must be not exist');
-      next();
-    },
-    (next) => {
-      assert.comment('Remove collection');
-      FlatDB.removeCollection(col);
-      let a = C.get(_id);
-      assert.equals(a, null, 'Item must be gone with removed collection');
-      next();
-    },
-    (next) => {
-      assert.comment('Empty unexisting collection');
-      let re = FlatDB.emptyCollection(col);
-      assert.equals(re, false, 'Result should be falsy');
-      next();
-    },
-    (next) => {
-      assert.comment('Remove unexisting collection');
-      let re = FlatDB.removeCollection(col);
-      assert.equals(re, false, 'Result should be falsy');
-      next();
-    }
-  ]).catch((err) => {
-    console.trace(err);
-  }).finally(assert.end);
+  assert.throws(() => {
+    return userCollection.get(123);
+  }, true, `userCollection.get(123) must throw error`);
+
+  assert.throws(() => {
+    return userCollection.add(123);
+  }, true, `userCollection.add(123) must throw error`);
+
+  assert.throws(() => {
+    return userCollection.update(123, {name: 'X'});
+  }, true, `userCollection.update(123, {name: 'X'}) must throw error`);
+
+  let badRemove = userCollection.remove('abc');
+  assert.equals(badRemove, false, `userCollection.remove('abc') must return false`);
+
+  assert.throws(() => {
+    return userCollection.remove();
+  }, true, `userCollection.remove() must throw error`);
+
+
+  let finder = userCollection.find();
+  assert.ok(finder instanceof Finder, 'userCollection.find() must return an instance of Finder');
+
+  userCollection.reset();
+
+  assert.end();
 });
 
-test('Testing Collection with schema:', (assert) => {
+test('Test FlatDB.Collection class with persistent data:', (assert) => {
 
   FlatDB.configure({
-    path: 'storage/',
-    maxTextLength: 500
+    dir: './/test///db'
   });
 
-  let User = FlatDB.addCollection('users', {
-    username: '',
-    email: '',
-    age: 0
+  let Movie = new FlatDB.Collection('movies', {
+    title: '',
+    imdb: 0
   });
 
-  assert.comment('New item passed via schema');
-  let id = User.add({
-    username: 'bob',
-    email: 'bob@mail.com',
-    location: 'USA'
+  // Movie.add({
+  //   title: 'The Godfather',
+  //   imdb: 9.2
+  // });
+
+  Movie.add({
+    title: 'Independence Day: Resurgence',
+    imdb: 7.1
   });
 
-  let user = User.get(id);
-  console.log(user);
+  let arr = Movie.all();
+  assert.equals(arr.length, 2, `Movie must have 2 entries`);
+
+  let {_id_} = arr[1];
+  Movie.remove(_id_);
+
+  assert.equals(Movie.count(), 1, `Movie must have 1 entry`);
 
   assert.end();
 });
