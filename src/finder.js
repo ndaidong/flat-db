@@ -6,13 +6,16 @@
 var {
   hasProperty,
   isString,
-  isNumber
+  isNumber,
+  isInteger
 } = require('bellajs');
 
 class Finder {
 
   constructor(entries = []) {
     this.entries = entries;
+    this._skip = 0;
+    this._limit = entries.length;
   }
 
   equals(key, val) {
@@ -107,8 +110,32 @@ class Finder {
     return this;
   }
 
+  skip(k) {
+    if (isInteger(k)) {
+      this._skip = k;
+    }
+    return this;
+  }
+
+  limit(k) {
+    if (isInteger(k)) {
+      this._limit = k;
+    }
+    return this;
+  }
+
   run() {
-    return this.entries;
+    let entries = this.entries;
+    let skip = this._skip;
+    let limit = this._limit;
+    let leng = entries.length;
+    if (skip > 0 && skip < leng) {
+      entries = entries.slice(skip, leng);
+    }
+    if (limit > 0 && limit < entries.length) {
+      entries = entries.slice(0, limit);
+    }
+    return entries;
   }
 
 }
