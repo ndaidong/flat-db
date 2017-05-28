@@ -5,7 +5,7 @@ Flat-file based data storage
 [![Build Status](https://travis-ci.org/ndaidong/flat-db.svg?branch=master)](https://travis-ci.org/ndaidong/flat-db)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/flat-db/badge.svg?branch=master&noop)](https://coveralls.io/github/ndaidong/flat-db?branch=master)
 [![Dependency Status](https://gemnasium.com/badges/github.com/ndaidong/flat-db.svg)](https://gemnasium.com/github.com/ndaidong/flat-db)
-[![Known Vulnerabilities](https://snyk.io/test/npm/flat-db/badge.svg)](https://snyk.io/test/npm/flat-db)
+[![NSP Status](https://nodesecurity.io/orgs/techpush/projects/ba89614a-f3d3-42e3-9aa1-dbdd9096a01c/badge)](https://nodesecurity.io/orgs/techpush/projects/ba89614a-f3d3-42e3-9aa1-dbdd9096a01c)
 
 # Setup
 
@@ -20,11 +20,11 @@ npm install flat-db --save
 
   // configure path to storage dir
   FlatDB.configure({
-    path: 'storage'
+    dir: './storage'
   });
 
   // add collection
-  var Movie = FlatDB.addCollection('movies');
+  var Movie = new FlatDB.Collection('movies');
 
   // add item into "Movie" collection
   let key = Movie.add({
@@ -53,26 +53,77 @@ npm install flat-db --save
 
 ### FlatDB
  - .configure(Object options)
- - .getConfigs()
- - .addCollection(String collectionName, Object schema) // schema will be supported in future
- - .getCollection(String collectionName)
- - .emptyCollection(String collectionName)
- - .removeCollection(String collectionName)
- - .reset() // remove all collections
 
-FlatDB.addCollection() and FlatDB.getCollection() return a Collection instance with the following methods:
+#### FlatDB.Collection(String name, Object schema) constructor
 
-#### Collection instance
+```
+let Movie = new FlatDB.Collection('movies', {
+  title: '',
+  year: 0
+});
+```
+
+The schema is optional. If the schema was defined, any new item were added would be founded based this schema's structure and data type.
+
+#### FlatDB.Collection class instance
  - .add(Object item)
- - .update(String itemKey, Object updates)
- - .get([String itemKey])
- - .remove(String itemKey)
+
+```
+let key = Movie.add({
+// movie data
+});
+console.log(key);
+
+```
+
+It's possible to add multi items in the same time:
+
+```
+let keys = Movie.add([
+            {
+              // movie data
+            },
+            {
+              // movie data
+            }
+          ]);
+console.log(keys);
+ ```
+
+ - .get([String key])
+
+```
+let movie = Movie.get(key);
+console.log(movie);
+ ```
+
+ - .update(String key, Object updates)
+
+```
+let movie = Movie.update(key, {
+  // mutual data
+});
+console.log(movie);
+ ```
+
+ - .remove(String key)
+
+```
+let result = Movie.remove(key);
+console.log(result); // true if removed
+ ```
+
  - .find()
 
+Returns the Finder instance
 
-##### Collection Finder
+```
+let MovieFinder = Movie.find();
+console.log(MovieFinder);
+ ```
 
-When you call Collection.find(), it would return a CollectionFinder instance with the following chaining methods:
+
+##### Collection Finder instance
 
   - .equals(String property, String | Number value)
   - .notEqual(String property, String | Number value)
@@ -83,7 +134,6 @@ When you call Collection.find(), it would return a CollectionFinder instance wit
   - .matches(String property, RegExp value)
   - .run()
 
-The result by run() is a Promise.
 
 Examples:
 
@@ -91,11 +141,12 @@ Examples:
 
 // configure storage
 FlatDB.configure({
-  path: 'storage/'
+  dir: 'storage/'
 });
 
-// add a collection names "movies"
-let Movie = FlatDB.addCollection('movies');
+let Movie = new FlatDB.Collection('movies', {
+
+});
 
 // add some movies to collection
 let entries = [
@@ -117,43 +168,24 @@ let entries = [
   }
 ];
 
-entries.forEach((item) => {
-  Movie.add(item);
-});
-
-// now we can find the expected movies
-Movie
-  .find()
-  .matches('title', /The/)
-  .gt('imdb', 7)
-  .run().then((results) => {
-    console.log(results);
-  });
-
-// or create a CollectionFinder instance to use later
-let MovieFinder = Movie.find();
-
-// find items which have "re" in the title
-MovieFinder
-  .matches('title', /re/i)
-  .run().then((results) => {
-    console.log(results);
-  });
-
-// find items with imdb < 7.1
-MovieFinder
-  .lt('imdb', 7.1)
-  .run().then((results) => {
-    console.log(results);
-  });
+Movie.add(entries);
 
 // find items with imdb > 6 and title contains "God"
-MovieFinder
-  .gt('imdb', 6)
-  .matches('title', /God/)
-  .run().then((results) => {
-    console.log(results);
-  });
+let results = Movie
+            .find()
+            .gt('imdb', 6)
+            .matches('title', /God/)
+            .run();
+console.log(results);
+
+// find items which have "re" in the title
+results = Movie.find().matches('title', /re/i).run();
+console.log(results);
+
+// find items with imdb < 7.1
+results = Movie.find().lt('imdb', 7.1).run();
+console.log(results);
+
 ```
 
 # Test

@@ -3,8 +3,11 @@
  * @ndaidong
  **/
 
-var bella = require('bellajs');
-var Promise = require('promise-wtf');
+var {
+  hasProperty,
+  isString,
+  isNumber
+} = require('bellajs');
 
 class Finder {
 
@@ -15,7 +18,7 @@ class Finder {
   equals(key, val) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
+      if (hasProperty(item, key)) {
         return item[key] === val;
       }
       return false;
@@ -26,7 +29,7 @@ class Finder {
   notEqual(key, val) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
+      if (hasProperty(item, key)) {
         return item[key] !== val;
       }
       return true;
@@ -37,9 +40,9 @@ class Finder {
   gt(key, val) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
+      if (hasProperty(item, key)) {
         let a = item[key];
-        if (bella.isNumber(a)) {
+        if (isNumber(a)) {
           return a > val;
         }
       }
@@ -51,9 +54,9 @@ class Finder {
   gte(key, val) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
+      if (hasProperty(item, key)) {
         let a = item[key];
-        if (bella.isNumber(a)) {
+        if (isNumber(a)) {
           return a >= val;
         }
       }
@@ -65,9 +68,9 @@ class Finder {
   lt(key, val) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
+      if (hasProperty(item, key)) {
         let a = item[key];
-        if (bella.isNumber(a)) {
+        if (isNumber(a)) {
           return a < val;
         }
       }
@@ -79,9 +82,9 @@ class Finder {
   lte(key, val) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
+      if (hasProperty(item, key)) {
         let a = item[key];
-        if (bella.isNumber(a)) {
+        if (isNumber(a)) {
           return a <= val;
         }
       }
@@ -93,9 +96,9 @@ class Finder {
   matches(key, reg) {
     let entries = this.entries;
     this.entries = entries.filter((item) => {
-      if (bella.hasProperty(item, key)) {
+      if (hasProperty(item, key)) {
         let a = item[key];
-        if (bella.isString(a)) {
+        if (isString(a)) {
           return a.match(reg) !== null;
         }
       }
@@ -105,7 +108,7 @@ class Finder {
   }
 
   run() {
-    return Promise.resolve(this.entries);
+    return this.entries;
   }
 
 }

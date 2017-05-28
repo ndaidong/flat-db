@@ -1,11 +1,12 @@
 var FlatDB = require('../../index');
 
 FlatDB.configure({
-  path: 'storage/'
+  dir: 'storage/flatdb',
+  port: '1111'
 });
 
 // add a collection names "movies"
-let Movie = FlatDB.addCollection('movies');
+let Movie = new FlatDB.Collection('movies');
 
 // add some movies to collection
 let entries = [
@@ -27,9 +28,7 @@ let entries = [
   }
 ];
 
-entries.forEach((item) => {
-  Movie.add(item);
-});
+Movie.add(entries);
 
 // now we can find the expected movies
 Movie
