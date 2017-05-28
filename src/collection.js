@@ -110,12 +110,8 @@ class Collection {
     let schema = this.schema;
     let noSchema = isEmpty(schema);
 
-    let data = isArray(item) ? item : [item];
-    let added = [];
-
-    let newEntries = data.map((entry) => {
+    let addOne = (entry) => {
       let id = createId(32);
-      added.push(id);
       entry._id_ = id;
       entry._ts_ = time();
 
@@ -132,14 +128,19 @@ class Collection {
         entry = _item;
       }
       return entry;
-    });
+    };
 
-    let t = added.length;
-    if (t > 0) {
-      this.entries = entries.concat(newEntries);
+    if (!isArray(item)) {
+      let newEntry = addOne(item);
+      this.entries.push(newEntry);
       this.onchange();
+      return newEntry._id_;
     }
-    return t === 1 ? added[0]._id_ : added.map((a) => {
+
+    let newEntries = item.map(addOne);
+    this.entries = entries.concat(newEntries);
+    this.onchange();
+    return newEntries.map((a) => {
       return a._id_;
     });
   }
