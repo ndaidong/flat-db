@@ -120,8 +120,8 @@ class Collection {
           _id_: '',
           _ts_: 0
         }, schema);
-        for (let key in entry) {
-          if (hasProperty(item, key) && typeof entry[key] === typeof _item[key]) {
+        for (let key in _item) {
+          if (hasProperty(entry, key) && typeof entry[key] === typeof _item[key]) {
             _item[key] = entry[key];
           }
         }
@@ -176,6 +176,7 @@ class Collection {
     if (k >= 0) {
 
       let obj = entries[k];
+
       for (let key in obj) {
         if (key !== '_id_' &&
               hasProperty(data, key) &&
