@@ -16,7 +16,7 @@ npm install flat-db --save
 # APIs
 
 - FlatDB.configure(Object options)
-- FlatDB.Collection(String name[, Object schema]) - return Collection instance
+- FlatDB.Collection(String name[, Object schema]) - Constructor - return Collection class instance
   - .add(Object entry | Array entries)
   - .get(String key)
   - .update(String key, Object updates)
@@ -55,10 +55,12 @@ let Movie = new FlatDB.Collection('movies', {
   year: 0
 });
 
-// The schema is optional. Once it was defined, any new item come later would be compared with this schema's structure and data type.
+// The schema is optional.
+// But once it was defined, any new item come later
+// will be compared with this schema's structure and data type
 
 // insert a set of movies into collection
-Movie.add([
+let keys = Movie.add([
   {
     title: 'The Godfather',
     imdb: 9.2
@@ -76,6 +78,34 @@ Movie.add([
     imdb: 5.7
   }
 ]);
+console.log(keys);
+
+// add a single movie
+let key = Movie.add({
+  title: 'X-Men',
+  imdb: 8.3,
+  year: 2011
+});
+// the property "year" will be ignored
+// because it does not match with schema
+console.log(key);
+
+// get item with given key
+let movie = Movie.get(key);
+console.log(movie);
+
+// update it
+let updating = Movie.update(key, {
+  title: 123456,
+  imdb: 8.2
+});
+// the property "title" will be ignored
+// because it does not match with expected type
+console.log(updating);
+
+// remove it
+let removing = Movie.remove(key);
+console.log(removing);
 
 // find items with imdb < 7.1
 results = Movie.find().lt('imdb', 7.1).run();
