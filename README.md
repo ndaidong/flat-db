@@ -58,7 +58,6 @@ let Movie = new FlatDB.Collection('movies', {
 // The schema is optional. Once it was defined, any new item come later would be compared with this schema's structure and data type.
 
 // insert a set of movies into collection
-
 Movie.add([
   {
     title: 'The Godfather',
