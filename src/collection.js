@@ -177,7 +177,10 @@ class Collection {
 
       let obj = entries[k];
       for (let key in obj) {
-        if (key !== '_id_' && hasProperty(data, key) && typeof data[key] === typeof obj[key] && data[key] !== obj[key]) {
+        if (key !== '_id_' &&
+              hasProperty(data, key) &&
+                typeof data[key] === typeof obj[key] &&
+                  data[key] !== obj[key]) {
           obj[key] = data[key];
           changed = true;
         }
