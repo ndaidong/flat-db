@@ -1,51 +1,8 @@
-# flat-db
-Flat-file based data storage
-
-[![NPM](https://badge.fury.io/js/flat-db.svg)](https://badge.fury.io/js/flat-db)
-[![Build Status](https://travis-ci.org/ndaidong/flat-db.svg?branch=master)](https://travis-ci.org/ndaidong/flat-db)
-[![Coverage Status](https://coveralls.io/repos/github/ndaidong/flat-db/badge.svg?branch=master&noop)](https://coveralls.io/github/ndaidong/flat-db?branch=master)
-[![Dependency Status](https://gemnasium.com/badges/github.com/ndaidong/flat-db.svg)](https://gemnasium.com/github.com/ndaidong/flat-db)
-[![NSP Status](https://nodesecurity.io/orgs/techpush/projects/ba89614a-f3d3-42e3-9aa1-dbdd9096a01c/badge)](https://nodesecurity.io/orgs/techpush/projects/ba89614a-f3d3-42e3-9aa1-dbdd9096a01c)
-
-# Setup
-
-```
-npm install flat-db --save
-```
-
-# APIs
-
-- FlatDB.configure(Object options)
-- FlatDB.Collection(String name[, Object schema]) - Constructor - return Collection class instance
-  - .add(Object entry | Array entries)
-  - .get(String key)
-  - .update(String key, Object updates)
-  - .remove(String key)
-  - .all()
-  - .count()
-  - .reset()
-  - .find() - return Finder class instance
-    - .equals(String property, String | Number value)
-    - .notEqual(String property, String | Number value)
-    - .gt(String property, Number value)
-    - .gte(String property, Number value)
-    - .lt(String property, Number value)
-    - .lte(String property, Number value)
-    - .matches(String property, RegExp value)
-    - .skip(Number value)
-    - .limit(Number value)
-    - .run()
-
-
-Example:
-
-```
-
-var FlatDB = require('flat-db');
+var FlatDB = require('../src/main');
 
 // configure path to storage dir
 FlatDB.configure({
-  dir: './storage'
+  dir: './storage/manual'
 });
 // since now, everything will be saved under ./storage
 
@@ -149,17 +106,3 @@ Movie.reset();
 count = Movie.count();
 console.log('\ncollection size after removing all:');
 console.log(count);
-```
-
-# Test
-
-```
-git clone https://github.com/ndaidong/flat-db.git
-cd flat-db
-npm install
-npm test
-```
-
-# License
-
-The MIT License (MIT)
