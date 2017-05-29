@@ -15,116 +15,51 @@ npm install flat-db --save
 
 # APIs
 
-### FlatDB
- - .configure(Object options)
+- FlatDB.configure(Object options)
+- FlatDB.Collection(String name[, Object schema]) - return Collection instance
+  - .add(Object entry | Array entries)
+  - .get(String key)
+  - .update(String key, Object updates)
+  - .remove(String key)
+  - .all()
+  - .count()
+  - .reset()
+  - .find() - return Finder class instance
+    - .equals(String property, String | Number value)
+    - .notEqual(String property, String | Number value)
+    - .gt(String property, Number value)
+    - .gte(String property, Number value)
+    - .lt(String property, Number value)
+    - .lte(String property, Number value)
+    - .matches(String property, RegExp value)
+    - .skip(Number value)
+    - .limit(Number value)
+    - .run()
+
+
+Example:
 
 ```
+
 var FlatDB = require('flat-db');
 
 // configure path to storage dir
 FlatDB.configure({
   dir: './storage'
 });
-
 // since now, everything will be saved under ./storage
-```
 
- - .Collection(String name, Object schema) - constructor
-
-```
+// create Movie collection with schema
 let Movie = new FlatDB.Collection('movies', {
   title: '',
   year: 0
 });
-```
 
-The schema is optional. Once it was defined, any new item come later would be compared with this schema's structure and data type.
+// The schema is optional. Once it was defined, any new item come later would be compared with this schema's structure and data type.
 
-#### FlatDB.Collection class instance
- - .add(Object item)
+// insert a set of movies into collection
 
-```
-let key = Movie.add({
-// movie data
-});
-console.log(key);
-
-```
-
-It's possible to add multi items in the same time:
-
-```
-let keys = Movie.add([
-            {
-              // movie data
-            },
-            {
-              // movie data
-            }
-          ]);
-console.log(keys);
- ```
-
- - .get([String key])
-
-```
-let movie = Movie.get(key);
-console.log(movie);
- ```
-
- - .update(String key, Object updates)
-
-```
-let movie = Movie.update(key, {
-  // mutual data
-});
-console.log(movie);
- ```
-
- - .remove(String key)
-
-```
-let result = Movie.remove(key);
-console.log(result); // true if removed
- ```
-
- - .find()
-
-Returns the Finder instance
-
-```
-let MovieFinder = Movie.find();
-console.log(MovieFinder);
- ```
-
-
-##### Collection Finder instance
-
-  - .equals(String property, String | Number value)
-  - .notEqual(String property, String | Number value)
-  - .gt(String property, Number value)
-  - .gte(String property, Number value)
-  - .lt(String property, Number value)
-  - .lte(String property, Number value)
-  - .matches(String property, RegExp value)
-  - .skip(Number value)
-  - .limit(Number value)
-  - .run()
-
-
-Examples:
-
-```
-
-// configure storage
-FlatDB.configure({
-  dir: 'storage/'
-});
-
-let Movie = new FlatDB.Collection('movies');
-
-// add some movies to collection
-let entries = [
+Movie.add([
   {
     title: 'The Godfather',
     imdb: 9.2
@@ -141,11 +76,18 @@ let entries = [
     title: 'Star Trek Beyond',
     imdb: 5.7
   }
-];
+]);
 
-Movie.add(entries);
+// find items with imdb < 7.1
+results = Movie.find().lt('imdb', 7.1).run();
+console.log(results);
 
-// find items with imdb > 6 and title contains "God"
+// find items which have "re" in the title
+results = Movie.find().matches('title', /re/i).run();
+console.log(results);
+
+
+// get 2 items since 2nd item, with imdb > 6 and title contains "God",
 let results = Movie
             .find()
             .gt('imdb', 6)
@@ -153,14 +95,6 @@ let results = Movie
             .skip(2)
             .limit(2)
             .run();
-console.log(results);
-
-// find items which have "re" in the title
-results = Movie.find().matches('title', /re/i).run();
-console.log(results);
-
-// find items with imdb < 7.1
-results = Movie.find().lt('imdb', 7.1).run();
 console.log(results);
 
 ```
