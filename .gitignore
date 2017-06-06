@@ -12,3 +12,7 @@ coverage
 .nyc_output
 
 storage
+
+yarn.lock
+coverage.lcov
+package-lock.json

@@ -4,9 +4,12 @@
  **/
 
 var {
-  stabilize,
   copies
 } = require('bellajs');
+
+var {
+  stabilize
+} = require('stabilize.js');
 
 var config = require('./configs');
 
