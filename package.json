@@ -1,5 +1,5 @@
 {
-  "version": "2.1.14",
+  "version": "2.1.15",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
@@ -21,19 +21,21 @@
     "test": "npm run tape",
     "posttest": "npm run report",
     "coveralls": "npm test && cat ./coverage/lcov.info | coveralls",
-    "try": "node test/manual"
+    "try": "node test/manual",
+    "reset": "node reset"
   },
   "dependencies": {
-    "bellajs": "6.x.x",
+    "bellajs": "7.x.x",
     "debug": "2.x.x",
-    "mkdirp": "0.x.x"
+    "mkdirp": "0.x.x",
+    "stabilize.js": "2.x.x"
   },
   "devDependencies": {
     "coveralls": "2.x.x",
     "eslint": "3.x.x",
     "eslint-config-ggc": "1.x.x",
     "nsp": "2.x.x",
-    "nyc": "10.x.x",
+    "nyc": "11.x.x",
     "tap-spec": "4.x.x",
     "tape": "4.x.x"
   },
