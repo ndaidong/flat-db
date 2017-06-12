@@ -1,5 +1,5 @@
 {
-  "version": "2.1.16",
+  "version": "2.1.17",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
@@ -21,7 +21,6 @@
     "test": "npm run tape",
     "posttest": "npm run report",
     "coveralls": "npm test && cat ./coverage/lcov.info | coveralls",
-    "try": "node test/manual",
     "reset": "node reset"
   },
   "dependencies": {
@@ -32,7 +31,7 @@
   },
   "devDependencies": {
     "coveralls": "2.x.x",
-    "eslint": "3.x.x",
+    "eslint": "4.x.x",
     "eslint-config-ggc": "1.x.x",
     "nsp": "2.x.x",
     "nyc": "11.x.x",
