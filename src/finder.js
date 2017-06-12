@@ -97,6 +97,10 @@ class Finder {
   }
 
   matches(key, reg) {
+    if (isString(reg)) {
+      reg = reg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     let entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
