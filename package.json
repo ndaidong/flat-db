@@ -1,5 +1,5 @@
 {
-  "version": "2.1.17",
+  "version": "2.1.2",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "bellajs": "7.x.x",
-    "debug": "2.x.x",
+    "debug": "3.x.x",
     "mkdirp": "0.x.x",
     "stabilize.js": "2.x.x"
   },
