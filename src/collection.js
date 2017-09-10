@@ -33,16 +33,18 @@ var C = new Map();
 
 class Collection {
 
-  constructor(name, schema = {}) {
+  constructor(name, schema = {}, forceReload = false) {
 
     let n = normalize(name);
     if (!n) {
       throw new Error(`Invalid collection name "${name}"`);
     }
 
-    let c = C.get(n);
-    if (c) {
-      return c;
+    if (!forceReload) {
+      let c = C.get(n);
+      if (c) {
+        return c;
+      }
     }
 
     this.name = n;

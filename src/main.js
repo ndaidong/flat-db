@@ -20,7 +20,8 @@ var {
 
 var {
   loadPersistentData,
-  Collection
+  Collection,
+  getCollection
 } = require('./database');
 
 var configure = (settings = {}) => {
@@ -42,5 +43,6 @@ var configure = (settings = {}) => {
 
 module.exports = {
   configure,
-  Collection
+  Collection,
+  getCollection
 };
