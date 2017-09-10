@@ -1,5 +1,5 @@
 {
-  "version": "2.1.2",
+  "version": "2.1.3",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
