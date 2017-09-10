@@ -15,7 +15,7 @@ var Finder = require('../../src/finder');
 
 test('Test FlatDB.Collection class:', (assert) => {
 
-  let userCollection = new FlatDB.Collection('users');
+  let userCollection = FlatDB.getCollection('users');
 
   let methods = [
     'all',

@@ -35,7 +35,12 @@ var loadPersistentData = () => {
 
 };
 
+let getCollection = (n) => {
+  return new Collection(n, false, true);
+};
+
 module.exports = {
   loadPersistentData,
-  Collection
+  Collection,
+  getCollection
 };
