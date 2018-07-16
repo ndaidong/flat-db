@@ -39,7 +39,7 @@ npm install flat-db --save
 
 Example:
 
-```
+```js
 
 var FlatDB = require('flat-db');
 
