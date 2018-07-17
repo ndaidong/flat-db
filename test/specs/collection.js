@@ -3,18 +3,17 @@
  * @ndaidong
  */
 
-var test = require('tape');
+const test = require('tap').test;
 
-var {
+const {
   isFunction,
-  isString
+  isString,
 } = require('bellajs');
 
-var FlatDB = require('../../src/main');
-var Finder = require('../../src/finder');
+const FlatDB = require('../../src/main');
+const Finder = require('../../src/finder');
 
 test('Test FlatDB.Collection class:', (assert) => {
-
   let userCollection = FlatDB.getCollection('users');
 
   let methods = [
@@ -24,22 +23,22 @@ test('Test FlatDB.Collection class:', (assert) => {
     'update',
     'remove',
     'find',
-    'reset'
+    'reset',
   ];
 
   let sampleData = [
     {
       name: 'Alice',
-      age: 16
+      age: 16,
     },
     {
       name: 'Bob',
-      age: 15
+      age: 15,
     },
     {
       name: 'Kelly',
-      age: 17
-    }
+      age: 17,
+    },
   ];
 
   assert.ok(userCollection instanceof FlatDB.Collection, 'userCollection must be instance of FlatDB.Collection');
@@ -113,7 +112,7 @@ test('Test FlatDB.Collection class:', (assert) => {
   assert.comment('Test if collection single item add() return a key');
   let key = userCollection.add({
     name: 'Zic',
-    age: 19
+    age: 19,
   });
   assert.ok(isString(key), 'userCollection.add(user) must return a key string');
   assert.equals(key.length, 32, 'key.length must be 32');
@@ -132,14 +131,13 @@ test('Test FlatDB.Collection class:', (assert) => {
 });
 
 test('Test FlatDB.Collection class with persistent data:', (assert) => {
-
   FlatDB.configure({
-    dir: './/test///db'
+    dir: './/test///db',
   });
 
   let Movie = new FlatDB.Collection('movies', {
     title: '',
-    imdb: 0
+    imdb: 0,
   });
 
   // Movie.add({
@@ -149,7 +147,7 @@ test('Test FlatDB.Collection class with persistent data:', (assert) => {
 
   Movie.add({
     title: 'Independence Day: Resurgence',
-    imdb: 7.1
+    imdb: 7.1,
   });
 
   let arr = Movie.all();

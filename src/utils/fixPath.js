@@ -3,10 +3,12 @@
  * @ndaidong
  **/
 
-var path = require('path');
+const {
+  normalize,
+} = require('path');
 
-var fixPath = (p = '') => {
-  return path.normalize(p);
+const fixPath = (p = '') => {
+  return normalize(p);
 };
 
 module.exports = fixPath;

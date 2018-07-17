@@ -1,22 +1,21 @@
 // config
 
-var debug = require('debug');
-var error = debug('flatdb:error');
+const {error} = require('../utils/logger');
 
-var env = process.env || {}; // eslint-disable-line no-process-env
+const env = process.env || {}; // eslint-disable-line no-process-env
 
 [
   'NODE_ENV',
-  'FLATDB_DIR'
+  'FLATDB_DIR',
 ].forEach((name) => {
   if (!env[name]) {
     error(`Environment variable ${name} is missing, use default instead.`);
   }
 });
 
-var config = {
+const config = {
   ENV: env.NODE_ENV || 'development',
   dir: env.FLATDB_DIR || './flatdb/',
-  ext: '.fdb'
+  ext: '.fdb',
 };
 module.exports = config;

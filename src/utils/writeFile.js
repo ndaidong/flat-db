@@ -3,15 +3,15 @@
  * @ndaidong
  **/
 
-var {
-  writeFileSync
+const {
+  writeFileSync,
 } = require('fs');
 
-var {
-  isString
+const {
+  isString,
 } = require('bellajs');
 
-let writeFile = (f, data = '') => {
+const writeFile = (f, data = '') => {
   let content = isString(data) ? data : JSON.stringify(data);
   return writeFileSync(f, content, 'utf8');
 };

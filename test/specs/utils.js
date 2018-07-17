@@ -3,16 +3,16 @@
  * @ndaidong
  */
 
-var test = require('tape');
+const test = require('tap').test;
 
-var {
+const {
   isFunction,
-  createId
+  createId,
 } = require('bellajs');
 
-var utils = require('../../src/utils');
+const utils = require('../../src/utils');
 
-var {
+const {
   fixPath,
   readFile,
   writeFile,
@@ -20,11 +20,10 @@ var {
   exists,
   mkdir,
   rmdir,
-  normalize
+  normalize,
 } = utils;
 
 test('Test utils:', (assert) => {
-
   let methods = [
     'fixPath',
     'readFile',
@@ -33,7 +32,7 @@ test('Test utils:', (assert) => {
     'exists',
     'mkdir',
     'rmdir',
-    'normalize'
+    'normalize',
   ];
 
   methods.forEach((met) => {

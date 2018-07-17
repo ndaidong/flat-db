@@ -3,38 +3,36 @@
  * @ndaidong
  **/
 
-var debug = require('debug');
-var info = debug('flatdb:info');
-
-var {
+const {
   time,
   createId,
   hasProperty,
   isObject,
   isArray,
   isEmpty,
-  isString
+  isString,
 } = require('bellajs');
 
-var {
+const {
   fixPath,
   readFile,
   delFile,
   writeFile,
-  normalize
+  normalize,
+  logger,
 } = require('./utils');
 
-var config = require('./configs');
+const {info} = logger;
 
-var Finder = require('./finder');
+const config = require('./configs');
+
+const Finder = require('./finder');
 
 
-var C = new Map();
+const C = new Map();
 
 class Collection {
-
   constructor(name, schema = {}, forceReload = false) {
-
     let n = normalize(name);
     if (!n) {
       throw new Error(`Invalid collection name "${name}"`);
@@ -55,7 +53,7 @@ class Collection {
 
     let {
       dir,
-      ext
+      ext,
     } = config;
 
     let file = fixPath(`${dir}/${n}${ext}`);
@@ -69,7 +67,7 @@ class Collection {
       let {
         schema: cschema,
         lastModified,
-        entries
+        entries,
       } = data;
 
       this.schema = isEmpty(schema) ? cschema : schema;
@@ -89,7 +87,7 @@ class Collection {
       name: this.name,
       lastModified,
       schema: this.schema,
-      entries: this.all()
+      entries: this.all(),
     });
   }
 
@@ -102,7 +100,6 @@ class Collection {
   }
 
   add(item) {
-
     if (!isObject(item) && !isArray(item)) {
       throw new Error('Invalid parameter. Object required.');
     }
@@ -120,7 +117,7 @@ class Collection {
       if (!noSchema) {
         let _item = Object.assign({
           _id_: '',
-          _ts_: 0
+          _ts_: 0,
         }, schema);
         for (let key in _item) {
           if (hasProperty(entry, key) && typeof entry[key] === typeof _item[key]) {
@@ -148,7 +145,6 @@ class Collection {
   }
 
   get(id) {
-
     if (!isString(id)) {
       throw new Error('Invalid parameter. String required.');
     }
@@ -163,7 +159,6 @@ class Collection {
   }
 
   update(id, data) {
-
     if (!isString(id)) {
       throw new Error('Invalid parameter. String required.');
     }
@@ -176,7 +171,6 @@ class Collection {
     });
 
     if (k >= 0) {
-
       let obj = entries[k];
 
       for (let key in obj) {

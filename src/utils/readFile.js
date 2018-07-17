@@ -3,13 +3,12 @@
  * @ndaidong
  **/
 
-var {
+const {
   existsSync,
-  readFileSync
+  readFileSync,
 } = require('fs');
 
-var debug = require('debug');
-var error = debug('flatdb:error');
+const {error} = require('./logger');
 
 let readFile = (f) => {
   if (existsSync(f)) {

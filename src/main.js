@@ -3,31 +3,31 @@
  * @ndaidong
  **/
 
-var {
-  copies
+const {
+  copies,
 } = require('bellajs');
 
-var {
-  stabilize
+const {
+  stabilize,
 } = require('stabilize.js');
 
-var config = require('./configs');
+const config = require('./configs');
 
-var {
+const {
   fixPath,
-  mkdir
+  mkdir,
 } = require('./utils');
 
-var {
+const {
   loadPersistentData,
   Collection,
-  getCollection
+  getCollection,
 } = require('./database');
 
-var configure = (settings = {}) => {
+const configure = (settings = {}) => {
   copies(settings, config, true);
   let {
-    dir
+    dir,
   } = config;
 
   let f = fixPath(dir);
@@ -44,5 +44,5 @@ var configure = (settings = {}) => {
 module.exports = {
   configure,
   Collection,
-  getCollection
+  getCollection,
 };

@@ -1,3 +1,6 @@
 {
-  "extends": "eslint-config-ggc"
+  "extends": "eslint-config-goes",
+  "rules": {
+    "require-jsdoc": 0
+  }
 }
