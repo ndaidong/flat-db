@@ -1,19 +1,24 @@
 // index
 
-var exec = require('child_process').execSync;
-var mkdir = require('mkdirp').sync;
+const exec = require('child_process').execSync;
+const {
+  existsSync,
+  unlinkSync,
+} = require('fs');
+const mkdir = require('mkdirp').sync;
 
-var rmdir = (d) => {
+const rmdir = (d) => {
   return exec(`rm -rf ${d}`);
 };
 
-var fixPath = require('./fixPath');
-var readFile = require('./readFile');
-var writeFile = require('./writeFile');
-var delFile = require('./delFile');
-var exists = require('./exists');
+const fixPath = require('./fixPath');
+const readFile = require('./readFile');
+const writeFile = require('./writeFile');
+const delFile = (f) => unlinkSync(f);
+const exists = (f) => existsSync(f);
 
-var normalize = require('./normalize');
+const normalize = require('./normalize');
+const logger = require('./logger');
 
 module.exports = {
   fixPath,
@@ -23,5 +28,6 @@ module.exports = {
   exists,
   mkdir,
   rmdir,
-  normalize
+  normalize,
+  logger,
 };

@@ -3,9 +3,11 @@
  * @ndaidong
  **/
 
-var {isString} = require('bellajs');
+const {
+  isString,
+} = require('bellajs');
 
-var isValidCol = (name = '') => {
+const isValidCol = (name = '') => {
   let re = /^([A-Z_])+([_A-Z0-9])+$/i;
   return isString(name) && re.test(name);
 };

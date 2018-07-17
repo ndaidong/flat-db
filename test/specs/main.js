@@ -3,26 +3,25 @@
  * @ndaidong
  */
 
-var test = require('tape');
+const test = require('tap').test;
 
-var {
+const {
   hasProperty,
-  isObject
+  isObject,
 } = require('bellajs');
 
-var FlatDB = require('../../src/main');
+const FlatDB = require('../../src/main');
 
 test('Test FlatDB.configure() method:', (assert) => {
-
   let structure = [
     'ENV',
     'dir',
-    'ext'
+    'ext',
   ];
 
   let sampleConf = {
     dir: 'storage',
-    ext: '.json'
+    ext: '.json',
   };
 
   let config = FlatDB.configure(sampleConf);

@@ -3,15 +3,14 @@
  * @ndaidong
  **/
 
-var {
+const {
   hasProperty,
   isString,
   isNumber,
-  isInteger
+  isInteger,
 } = require('bellajs');
 
 class Finder {
-
   constructor(entries = []) {
     this.entries = entries;
     this._skip = 0;
@@ -141,7 +140,6 @@ class Finder {
     }
     return entries;
   }
-
 }
 
 module.exports = Finder;

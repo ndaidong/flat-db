@@ -3,20 +3,19 @@
  * @ndaidong
  */
 
-var path = require('path');
-var test = require('tape');
+const path = require('path');
+const test = require('tap').test;
 
-var {
-  isFunction
+const {
+  isFunction,
 } = require('bellajs');
 
-var rootDir = '../../src/';
-var FlatDB = require(path.join(rootDir, 'main'));
+const rootDir = '../../src/';
+const FlatDB = require(path.join(rootDir, 'main'));
 
 test('Test Finder class methods:', (assert) => {
-
   FlatDB.configure({
-    dir: './storage/'
+    dir: './storage/',
   });
 
   let entries = [
@@ -25,29 +24,29 @@ test('Test Finder class methods:', (assert) => {
       director: 'Francis Ford Coppola',
       writer: 'Mario Puzo',
       imdb: 9.2,
-      year: 1974
+      year: 1974,
     },
     {
       title: 'Independence Day: Resurgence',
       director: 'Roland Emmerich',
       writer: 'Nicolas Wright',
       imdb: 7.1,
-      year: 1981
+      year: 1981,
     },
     {
       title: 'Free State of Jones',
       director: 'Gary Ross',
       writer: 'Leonard Hartman',
       imdb: 6.4,
-      year: 1995
+      year: 1995,
     },
     {
       title: 'Star Trek Beyond',
       director: 'Justin Lin',
       writer: 'Simon Pegg',
       imdb: 5.7,
-      year: 2009
-    }
+      year: 2009,
+    },
   ];
 
   let Movie = new FlatDB.Collection('topmovies');
@@ -57,7 +56,7 @@ test('Test Finder class methods:', (assert) => {
 
   assert.comment('Check the public methods');
   [
-    'matches', 'equals', 'notEqual', 'gt', 'lt', 'skip', 'limit', 'run'
+    'matches', 'equals', 'notEqual', 'gt', 'lt', 'skip', 'limit', 'run',
   ].forEach((m) => {
     assert.ok(isFunction(MovieFinder[m]), `MovieFinder must have method .${m}()`);
   });

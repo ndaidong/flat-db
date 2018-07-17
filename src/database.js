@@ -3,28 +3,26 @@
  * @ndaidong
  **/
 
-var fs = require('fs');
-var path = require('path');
+const {readdirSync} = require('fs');
+const {basename} = require('path');
 
-var debug = require('debug');
-var info = debug('flatdb:info');
+const {info} = require('./utils/logger');
 
-var config = require('./configs');
+const config = require('./configs');
 
-var Collection = require('./collection');
+const Collection = require('./collection');
 
-var loadPersistentData = () => {
-
+const loadPersistentData = () => {
   let {
     dir,
-    ext
+    ext,
   } = config;
 
-  let dirs = fs.readdirSync(dir, 'utf8');
+  let dirs = readdirSync(dir, 'utf8');
   if (dirs && dirs.length) {
     dirs.forEach((file) => {
       if (file.endsWith(ext)) {
-        let fname = path.basename(file, ext);
+        let fname = basename(file, ext);
         let c = new Collection(fname);
         if (c) {
           info(`Loaded persistent data for collection "${c.name}"`);
@@ -32,7 +30,6 @@ var loadPersistentData = () => {
       }
     });
   }
-
 };
 
 let getCollection = (n) => {
@@ -42,5 +39,5 @@ let getCollection = (n) => {
 module.exports = {
   loadPersistentData,
   Collection,
-  getCollection
+  getCollection,
 };
