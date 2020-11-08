@@ -45,14 +45,14 @@ const FlatDB = require('flat-db');
 
 // configure path to storage dir
 FlatDB.configure({
-  dir: './storage'
+  dir: './storage',
 });
 // since now, everything will be saved under ./storage
 
 // create Movie collection with schema
 const Movie = new FlatDB.Collection('movies', {
   title: '',
-  imdb: 0
+  imdb: 0,
 });
 
 // The schema is optional.
@@ -63,20 +63,20 @@ const Movie = new FlatDB.Collection('movies', {
 const keys = Movie.add([
   {
     title: 'The Godfather',
-    imdb: 9.2
+    imdb: 9.2,
   },
   {
     title: 'Independence Day: Resurgence',
-    imdb: 7.1
+    imdb: 7.1,
   },
   {
     title: 'Free State of Jones',
-    imdb: 6.4
+    imdb: 6.4,
   },
   {
     title: 'Star Trek Beyond',
-    imdb: 5.7
-  }
+    imdb: 5.7,
+  },
 ]);
 console.log('\nkeys returned after adding multi items:');
 console.log(keys);
@@ -85,7 +85,7 @@ console.log(keys);
 const key = Movie.add({
   title: 'X-Men',
   imdb: 8.3,
-  year: 2011
+  year: 2011,
 });
 // the property "year" will be ignored
 // because it does not match with schema
@@ -100,7 +100,7 @@ console.log(movie);
 // update it
 const updating = Movie.update(key, {
   title: 123456,
-  imdb: 8.2
+  imdb: 8.2,
 });
 // the property "title" will be ignored
 // because it does not match with expected type
