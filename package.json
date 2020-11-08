@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "4.0.0",
   "name": "flat-db",
   "description": "Flat-file based data storage",
   "homepage": "https://www.npmjs.com/package/flat-db",
@@ -10,24 +10,23 @@
   "author": "@ndaidong",
   "main": "./index.js",
   "engines": {
-    "node": ">= 7.6"
+    "node": ">= 10.14.2"
   },
   "scripts": {
-    "lint": "eslint ./src ./test",
+    "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "tap test/start.js --coverage --reporter=spec",
+    "test": "tap tests/start.js --coverage --reporter=spec --coverage-report=html --no-browser",
+    "citest": "tap tests/start.js --coverage --reporter=spec --coverage-report=lcov --no-browser",
     "reset": "node reset"
   },
   "dependencies": {
-    "bellajs": "^7.2.2",
-    "debug": "^3.1.0",
-    "mkdirp": "^0.5.1",
-    "stabilize.js": "^2.0.0"
+    "bellajs": "^9.2.2",
+    "debug": "^4.2.0",
+    "mkdirp": "^1.0.4"
   },
   "devDependencies": {
-    "eslint": "^5.1.0",
-    "eslint-config-goes": "^1.0.0",
-    "tap": "^12.0.1"
+    "eslint-config-goes": "^1.1.8",
+    "tap": "^14.10.8"
   },
   "keywords": [
     "storage",

@@ -13,18 +13,18 @@ const {
 const FlatDB = require('../../src/main');
 
 test('Test FlatDB.configure() method:', (assert) => {
-  let structure = [
+  const structure = [
     'ENV',
     'dir',
     'ext',
   ];
 
-  let sampleConf = {
+  const sampleConf = {
     dir: 'storage',
     ext: '.json',
   };
 
-  let config = FlatDB.configure(sampleConf);
+  const config = FlatDB.configure(sampleConf);
 
   assert.ok(isObject(config), 'config must be an object');
 

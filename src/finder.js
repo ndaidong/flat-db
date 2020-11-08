@@ -18,7 +18,7 @@ class Finder {
   }
 
   equals(key, val) {
-    let entries = this.entries;
+    const entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
         return item[key] === val;
@@ -29,7 +29,7 @@ class Finder {
   }
 
   notEqual(key, val) {
-    let entries = this.entries;
+    const entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
         return item[key] !== val;
@@ -40,10 +40,10 @@ class Finder {
   }
 
   gt(key, val) {
-    let entries = this.entries;
+    const entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
-        let a = item[key];
+        const a = item[key];
         if (isNumber(a)) {
           return a > val;
         }
@@ -54,10 +54,10 @@ class Finder {
   }
 
   gte(key, val) {
-    let entries = this.entries;
+    const entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
-        let a = item[key];
+        const a = item[key];
         if (isNumber(a)) {
           return a >= val;
         }
@@ -68,10 +68,10 @@ class Finder {
   }
 
   lt(key, val) {
-    let entries = this.entries;
+    const entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
-        let a = item[key];
+        const a = item[key];
         if (isNumber(a)) {
           return a < val;
         }
@@ -82,10 +82,10 @@ class Finder {
   }
 
   lte(key, val) {
-    let entries = this.entries;
+    const entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
-        let a = item[key];
+        const a = item[key];
         if (isNumber(a)) {
           return a <= val;
         }
@@ -100,10 +100,10 @@ class Finder {
       reg = reg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
-    let entries = this.entries;
+    const entries = this.entries;
     this.entries = entries.filter((item) => {
       if (hasProperty(item, key)) {
-        let a = item[key];
+        const a = item[key];
         if (isString(a)) {
           return a.match(reg) !== null;
         }
@@ -129,9 +129,9 @@ class Finder {
 
   run() {
     let entries = this.entries;
-    let skip = this._skip;
-    let limit = this._limit;
-    let leng = entries.length;
+    const skip = this._skip;
+    const limit = this._limit;
+    const leng = entries.length;
     if (skip > 0 && skip < leng) {
       entries = entries.slice(skip, leng);
     }

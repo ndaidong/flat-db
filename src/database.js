@@ -13,17 +13,17 @@ const config = require('./configs');
 const Collection = require('./collection');
 
 const loadPersistentData = () => {
-  let {
+  const {
     dir,
     ext,
   } = config;
 
-  let dirs = readdirSync(dir, 'utf8');
+  const dirs = readdirSync(dir, 'utf8');
   if (dirs && dirs.length) {
     dirs.forEach((file) => {
       if (file.endsWith(ext)) {
-        let fname = basename(file, ext);
-        let c = new Collection(fname);
+        const fname = basename(file, ext);
+        const c = new Collection(fname);
         if (c) {
           info(`Loaded persistent data for collection "${c.name}"`);
         }
@@ -32,7 +32,7 @@ const loadPersistentData = () => {
   }
 };
 
-let getCollection = (n) => {
+const getCollection = (n) => {
   return new Collection(n, false, true);
 };
 

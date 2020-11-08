@@ -4,7 +4,7 @@ const path = require('path');
  * Import specs
  */
 
-const dir = '../test/specs/';
+const dir = '../tests/specs/';
 [
   'utils',
   'main',

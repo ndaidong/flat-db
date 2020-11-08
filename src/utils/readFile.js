@@ -10,11 +10,11 @@ const {
 
 const {error} = require('./logger');
 
-let readFile = (f) => {
+const readFile = (f) => {
   if (existsSync(f)) {
-    let s = readFileSync(f, 'utf8');
+    const s = readFileSync(f, 'utf8');
     try {
-      let c = JSON.parse(s);
+      const c = JSON.parse(s);
       return c;
     } catch (err) {
       error(err);
