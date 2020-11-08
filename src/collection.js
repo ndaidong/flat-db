@@ -5,7 +5,7 @@
 
 const {
   time,
-  createId,
+  genid,
   hasProperty,
   isObject,
   isArray,
@@ -33,13 +33,13 @@ const C = new Map();
 
 class Collection {
   constructor(name, schema = {}, forceReload = false) {
-    let n = normalize(name);
+    const n = normalize(name);
     if (!n) {
       throw new Error(`Invalid collection name "${name}"`);
     }
 
     if (!forceReload) {
-      let c = C.get(n);
+      const c = C.get(n);
       if (c) {
         return c;
       }
@@ -51,20 +51,20 @@ class Collection {
     this.lastModified = time();
     this.entries = [];
 
-    let {
+    const {
       dir,
       ext,
     } = config;
 
-    let file = fixPath(`${dir}/${n}${ext}`);
+    const file = fixPath(`${dir}/${n}${ext}`);
 
     this.file = file;
 
     this.status = 0;
 
-    let data = readFile(file);
+    const data = readFile(file);
     if (data) {
-      let {
+      const {
         schema: cschema,
         lastModified,
         entries,
@@ -81,7 +81,7 @@ class Collection {
   }
 
   onchange() {
-    let lastModified = time();
+    const lastModified = time();
     this.lastModified = lastModified;
     writeFile(this.file, {
       name: this.name,
@@ -104,22 +104,22 @@ class Collection {
       throw new Error('Invalid parameter. Object required.');
     }
 
-    let entries = this.all();
+    const entries = this.all();
 
-    let schema = this.schema;
-    let noSchema = isEmpty(schema);
+    const schema = this.schema;
+    const noSchema = isEmpty(schema);
 
-    let addOne = (entry) => {
-      let id = createId(32);
+    const addOne = (entry) => {
+      const id = genid(32);
       entry._id_ = id;
       entry._ts_ = time();
 
       if (!noSchema) {
-        let _item = Object.assign({
+        const _item = Object.assign({
           _id_: '',
           _ts_: 0,
         }, schema);
-        for (let key in _item) {
+        for (const key in _item) {
           if (hasProperty(entry, key) && typeof entry[key] === typeof _item[key]) {
             _item[key] = entry[key];
           }
@@ -130,13 +130,13 @@ class Collection {
     };
 
     if (!isArray(item)) {
-      let newEntry = addOne(item);
+      const newEntry = addOne(item);
       this.entries.push(newEntry);
       this.onchange();
       return newEntry._id_;
     }
 
-    let newEntries = item.map(addOne);
+    const newEntries = item.map(addOne);
     this.entries = entries.concat(newEntries);
     this.onchange();
     return newEntries.map((a) => {
@@ -149,9 +149,9 @@ class Collection {
       throw new Error('Invalid parameter. String required.');
     }
 
-    let entries = this.all();
+    const entries = this.all();
 
-    let candidates = entries.filter((item) => {
+    const candidates = entries.filter((item) => {
       return item._id_ === id;
     });
 
@@ -163,17 +163,17 @@ class Collection {
       throw new Error('Invalid parameter. String required.');
     }
 
-    let entries = this.all();
+    const entries = this.all();
     let changed = false;
 
-    let k = entries.findIndex((el) => {
+    const k = entries.findIndex((el) => {
       return el._id_ === id;
     });
 
     if (k >= 0) {
-      let obj = entries[k];
+      const obj = entries[k];
 
-      for (let key in obj) {
+      for (const key in obj) {
         if (key !== '_id_' &&
               hasProperty(data, key) &&
                 typeof data[key] === typeof obj[key] &&
@@ -203,8 +203,8 @@ class Collection {
       throw new Error('Invalid parameter. String required.');
     }
 
-    let entries = this.all();
-    let k = entries.findIndex((el) => {
+    const entries = this.all();
+    const k = entries.findIndex((el) => {
       return el._id_ === id;
     });
 

@@ -12,7 +12,7 @@ const {
 } = require('bellajs');
 
 const writeFile = (f, data = '') => {
-  let content = isString(data) ? data : JSON.stringify(data);
+  const content = isString(data) ? data : JSON.stringify(data);
   return writeFileSync(f, content, 'utf8');
 };
 

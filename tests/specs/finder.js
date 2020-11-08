@@ -18,7 +18,7 @@ test('Test Finder class methods:', (assert) => {
     dir: './storage/',
   });
 
-  let entries = [
+  const entries = [
     {
       title: 'The Godfather',
       director: 'Francis Ford Coppola',
@@ -49,10 +49,10 @@ test('Test Finder class methods:', (assert) => {
     },
   ];
 
-  let Movie = new FlatDB.Collection('topmovies');
+  const Movie = new FlatDB.Collection('topmovies');
   Movie.add(entries);
 
-  let MovieFinder = Movie.find();
+  const MovieFinder = Movie.find();
 
   assert.comment('Check the public methods');
   [
@@ -62,11 +62,11 @@ test('Test Finder class methods:', (assert) => {
   });
 
   assert.comment('Check Finder.skip()');
-  let skips = Movie.find().skip(2).run();
+  const skips = Movie.find().skip(2).run();
   assert.equals(skips.length, 2, 'It must find out 2 items with skip(2)');
 
   assert.comment('Check Finder.limit()');
-  let limits = Movie.find().limit(1).run();
+  const limits = Movie.find().limit(1).run();
   assert.equals(limits.length, 1, 'It must find out 1 item with limit(1)');
 
   assert.comment('Check Finder.matches() - without "i" flag');

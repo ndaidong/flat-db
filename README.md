@@ -2,7 +2,9 @@
 Flat-file based data storage
 
 [![NPM](https://badge.fury.io/js/flat-db.svg)](https://badge.fury.io/js/flat-db)
-[![Build Status](https://travis-ci.org/ndaidong/flat-db.svg?branch=master)](https://travis-ci.org/ndaidong/flat-db)
+![CI test](https://github.com/ndaidong/flat-db/workflows/ci-test/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/ndaidong/flat-db/badge.svg)](https://coveralls.io/github/ndaidong/flat-db)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ndaidong_flat-db&metric=alert_status)](https://sonarcloud.io/dashboard?id=ndaidong_flat-db)
 
 
 # Setup
@@ -39,7 +41,7 @@ Example:
 
 ```js
 
-var FlatDB = require('flat-db');
+const FlatDB = require('flat-db');
 
 // configure path to storage dir
 FlatDB.configure({
@@ -48,7 +50,7 @@ FlatDB.configure({
 // since now, everything will be saved under ./storage
 
 // create Movie collection with schema
-let Movie = new FlatDB.Collection('movies', {
+const Movie = new FlatDB.Collection('movies', {
   title: '',
   imdb: 0
 });
@@ -58,7 +60,7 @@ let Movie = new FlatDB.Collection('movies', {
 // will be compared with this schema's structure and data type
 
 // insert a set of movies into collection
-let keys = Movie.add([
+const keys = Movie.add([
   {
     title: 'The Godfather',
     imdb: 9.2
@@ -80,7 +82,7 @@ console.log('\nkeys returned after adding multi items:');
 console.log(keys);
 
 // add a single movie
-let key = Movie.add({
+const key = Movie.add({
   title: 'X-Men',
   imdb: 8.3,
   year: 2011
@@ -91,12 +93,12 @@ console.log('\nkey returned after adding single item:');
 console.log(key);
 
 // get item with given key
-let movie = Movie.get(key);
+const movie = Movie.get(key);
 console.log(`\nget item by key ${key}:`);
 console.log(movie);
 
 // update it
-let updating = Movie.update(key, {
+const updating = Movie.update(key, {
   title: 123456,
   imdb: 8.2
 });
@@ -106,33 +108,33 @@ console.log('\nupdating result:');
 console.log(updating);
 
 // remove it
-let removing = Movie.remove(key);
+const removing = Movie.remove(key);
 console.log('\nremoving result:');
 console.log(removing);
 
 // count collection size
-let count = Movie.count();
+const count = Movie.count();
 console.log('\ncollection size:');
 console.log(count);
 
 // get all item
-let all = Movie.all();
+const all = Movie.all();
 console.log('\nall items:');
 console.log(all);
 
 // find items with imdb < 7.1
-let results = Movie.find().lt('imdb', 7.1).run();
+const results = Movie.find().lt('imdb', 7.1).run();
 console.log('\nitems with imdb < 7.1:');
 console.log(results);
 
 // get 2 items since 2nd item (skip first item), which have "re" in the title
-results = Movie.find().matches('title', /re/i).skip(1).limit(2).run();
+const results = Movie.find().matches('title', /re/i).skip(1).limit(2).run();
 console.log('\n2 items since 2nd item (skip first one), \n which have "re" in the title:');
 console.log(results);
 
 
 // find items with imdb > 6 and title contains "God"
-results = Movie
+const results = Movie
             .find()
             .gt('imdb', 6)
             .matches('title', /God/)
@@ -144,7 +146,7 @@ console.log(results);
 Movie.reset();
 
 // count collection size after removing all
-count = Movie.count();
+const count = Movie.count();
 console.log('\ncollection size after removing all:');
 console.log(count);
 ```

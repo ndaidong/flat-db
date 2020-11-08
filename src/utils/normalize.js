@@ -8,11 +8,11 @@ const {
 } = require('bellajs');
 
 const isValidCol = (name = '') => {
-  let re = /^([A-Z_])+([_A-Z0-9])+$/i;
+  const re = /^([A-Z_])+([_A-Z0-9])+$/i;
   return isString(name) && re.test(name);
 };
 
-let normalize = (name) => {
+const normalize = (name) => {
   if (isValidCol(name)) {
     return name.toLowerCase();
   }

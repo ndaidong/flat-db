@@ -5,11 +5,9 @@
 
 const {
   copies,
+  clone,
 } = require('bellajs');
 
-const {
-  stabilize,
-} = require('stabilize.js');
 
 const config = require('./configs');
 
@@ -26,11 +24,11 @@ const {
 
 const configure = (settings = {}) => {
   copies(settings, config, true);
-  let {
+  const {
     dir,
   } = config;
 
-  let f = fixPath(dir);
+  const f = fixPath(dir);
   if (dir !== f) {
     config.dir = f;
   }
@@ -38,7 +36,7 @@ const configure = (settings = {}) => {
   mkdir(f);
   loadPersistentData();
 
-  return stabilize(config);
+  return clone(config);
 };
 
 module.exports = {

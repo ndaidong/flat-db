@@ -14,9 +14,9 @@ const FlatDB = require('../../src/main');
 const Finder = require('../../src/finder');
 
 test('Test FlatDB.Collection class:', (assert) => {
-  let userCollection = FlatDB.getCollection('users');
+  const userCollection = FlatDB.getCollection('users');
 
-  let methods = [
+  const methods = [
     'all',
     'add',
     'get',
@@ -26,7 +26,7 @@ test('Test FlatDB.Collection class:', (assert) => {
     'reset',
   ];
 
-  let sampleData = [
+  const sampleData = [
     {
       name: 'Alice',
       age: 16,
@@ -48,41 +48,41 @@ test('Test FlatDB.Collection class:', (assert) => {
   });
 
   assert.comment('Add sample data with Collection.add()');
-  let keys = userCollection.add(sampleData);
+  const keys = userCollection.add(sampleData);
   assert.equals(keys.length, 3, 'userCollection.add(sampleData) must return 3 keys');
 
   assert.comment('Get all collection entries with Collection.all()');
-  let users = userCollection.all();
+  const users = userCollection.all();
   assert.equals(users.length, 3, 'userCollection.all() must return 3 entries');
 
   assert.comment('Get specific entry with Collection.get()');
 
   let k = 0;
   users.forEach((u) => {
-    let user = userCollection.get(u._id_);
-    let ref = sampleData[k];
+    const user = userCollection.get(u._id_);
+    const ref = sampleData[k];
     assert.equals(user.name, ref.name, `user.name must be "${ref.name}"`);
     assert.equals(user.age, ref.age, `user.age must be "${ref.age}"`);
     k++;
   });
 
   assert.comment('Update specific entry with Collection.update()');
-  let alice = users[0];
-  let {_id_: id} = alice;
+  const alice = users[0];
+  const {_id_: id} = alice;
   userCollection.update(id, {name: 'Ecila'});
-  let ecila = userCollection.get(id);
+  const ecila = userCollection.get(id);
   assert.equals(ecila.name, 'Ecila', `ecila.name must be "Ecila"`);
   assert.equals(ecila.age, alice.age, `ecila.age must be "${alice.age}"`);
 
   assert.comment('Test exceptions with bad input');
 
-  let badGet = userCollection.get('abc');
+  const badGet = userCollection.get('abc');
   assert.equals(badGet, null, `userCollection.get('abc') must return null`);
 
-  let badUpdate = userCollection.update('abc', {name: 'Tom'});
+  const badUpdate = userCollection.update('abc', {name: 'Tom'});
   assert.equals(badUpdate, false, `userCollection.update('unexistKey') must return false`);
 
-  let nochangeUpdate = userCollection.update(id, {name: 'Ecila'});
+  const nochangeUpdate = userCollection.update(id, {name: 'Ecila'});
   assert.equals(nochangeUpdate, false, `userCollection.update(id, {name: 'Ecila'}) must return false`);
 
   assert.throws(() => {
@@ -101,7 +101,7 @@ test('Test FlatDB.Collection class:', (assert) => {
     return userCollection.update(123, {name: 'X'});
   }, true, `userCollection.update(123, {name: 'X'}) must throw error`);
 
-  let badRemove = userCollection.remove('abc');
+  const badRemove = userCollection.remove('abc');
   assert.equals(badRemove, false, `userCollection.remove('abc') must return false`);
 
   assert.throws(() => {
@@ -110,7 +110,7 @@ test('Test FlatDB.Collection class:', (assert) => {
 
 
   assert.comment('Test if collection single item add() return a key');
-  let key = userCollection.add({
+  const key = userCollection.add({
     name: 'Zic',
     age: 19,
   });
@@ -118,11 +118,11 @@ test('Test FlatDB.Collection class:', (assert) => {
   assert.equals(key.length, 32, 'key.length must be 32');
 
   assert.comment('Test if collection update() return a mutual item');
-  let mutual = userCollection.update(key, {name: 'Lina'});
+  const mutual = userCollection.update(key, {name: 'Lina'});
   assert.equals(mutual.name, 'Lina', 'mutual.name must be "Lina"');
 
   assert.comment('Test collection find()');
-  let finder = userCollection.find();
+  const finder = userCollection.find();
   assert.ok(finder instanceof Finder, 'userCollection.find() must return an instance of Finder');
 
   userCollection.reset();
@@ -135,25 +135,20 @@ test('Test FlatDB.Collection class with persistent data:', (assert) => {
     dir: './/test///db',
   });
 
-  let Movie = new FlatDB.Collection('movies', {
+  const Movie = new FlatDB.Collection('movies', {
     title: '',
     imdb: 0,
   });
-
-  // Movie.add({
-  //   title: 'The Godfather',
-  //   imdb: 9.2
-  // });
 
   Movie.add({
     title: 'Independence Day: Resurgence',
     imdb: 7.1,
   });
 
-  let arr = Movie.all();
+  const arr = Movie.all();
   assert.equals(arr.length, 2, `Movie must have 2 entries`);
 
-  let {_id_} = arr[1];
+  const {_id_} = arr[1];
   Movie.remove(_id_);
 
   assert.equals(Movie.count(), 1, `Movie must have 1 entry`);

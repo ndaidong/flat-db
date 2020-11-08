@@ -7,7 +7,7 @@ const test = require('tap').test;
 
 const {
   isFunction,
-  createId,
+  genid,
 } = require('bellajs');
 
 const utils = require('../../src/utils');
@@ -24,7 +24,7 @@ const {
 } = utils;
 
 test('Test utils:', (assert) => {
-  let methods = [
+  const methods = [
     'fixPath',
     'readFile',
     'writeFile',
@@ -39,29 +39,29 @@ test('Test utils:', (assert) => {
     assert.ok(isFunction(utils[met]), `${met} must be function`);
   });
 
-  let sampleDir = `./sampleDir_${createId()}`;
+  const sampleDir = `./sampleDir_${genid()}`;
 
   mkdir(sampleDir);
   assert.ok(exists(sampleDir), `${sampleDir} must be created`);
 
-  let sampleTextFile = fixPath(`${sampleDir}/tmp.txt`);
-  let sampleFileContent = 'Hello world';
+  const sampleTextFile = fixPath(`${sampleDir}/tmp.txt`);
+  const sampleFileContent = 'Hello world';
   writeFile(sampleTextFile, sampleFileContent);
   assert.ok(exists(sampleTextFile), `${sampleTextFile} must be created`);
 
-  let nonJSON = readFile(sampleTextFile);
+  const nonJSON = readFile(sampleTextFile);
   assert.equals(nonJSON, null, `Read data from ${sampleTextFile} must return null`);
 
   delFile(sampleTextFile);
   assert.equals(exists(sampleTextFile), false, `${sampleTextFile} must be removed`);
 
-  let sampleJSONFile = fixPath(`${sampleDir}/tmp.json`);
-  let sampleFileData = {message: 'Hello world'};
+  const sampleJSONFile = fixPath(`${sampleDir}/tmp.json`);
+  const sampleFileData = {message: 'Hello world'};
   writeFile(sampleJSONFile, sampleFileData);
   assert.ok(exists(sampleJSONFile), `${sampleJSONFile} must be created`);
 
-  let json = readFile(sampleJSONFile);
-  let sampleJSON = JSON.stringify(sampleFileData);
+  const json = readFile(sampleJSONFile);
+  const sampleJSON = JSON.stringify(sampleFileData);
   assert.equals(JSON.stringify(json), sampleJSON, `json must be ${sampleJSON}`);
 
   rmdir(sampleDir);
